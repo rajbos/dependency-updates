@@ -19,4 +19,4 @@ RUN echo "Installing dotnetcore 3.1:" && \
     #- ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     rm dotnet.tar.gz
     
-COPY nukeeper.ps1 /
+COPY *.ps1 /
