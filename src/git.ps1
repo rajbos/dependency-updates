@@ -31,11 +31,20 @@ function SetupGit {
     git config user.email $gitUserEmail
     git config user.name $gitUserName
 
+    if ($RemoteUrl.StartsWith("https://")) {
+        # remove https for further usage
+        $RemoteUrl = $RemoteUrl.Substring(8, $RemoteUrl.Length-8)
+    }
+
     if ($PAT -ne '') {
         # use token for auth
-        git clone "https://xx:$($PAT)@$($RemoteUrl)"
+        $url = "https://xx:$($PAT)@$($RemoteUrl)"
     }
     else {
-        git clone "https://$RemoteUrl"
+        $url = "https://$RemoteUrl"
     }
+
+    Write-Host "Cloning from url [$url]"
+    git clone $url
+    ls
 }

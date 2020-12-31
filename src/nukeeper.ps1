@@ -8,22 +8,24 @@ param (
 )
 
 # import git functions
-#Set-Location $PSScriptRoot
-#. .\git.ps1
+Set-Location $PSScriptRoot
+. .\git.ps1 -PAT $env:GitLabToken -RemoteUrl $remoteUrl -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
 
 function ExecuteUpdates {
     param (
         [string] $gitLabProjectId
     )
 
-    SetupGit -PAT $env:GitLabToken -RemoteUrl $remoteUrl -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
+    SetupGit
     
     # install nukeeper in this location
     dotnet tool update nukeeper --tool-path .
 
+    Write-Host "Calling nukeeper"
     # get update info from NuKeeper
     $updates = .\nukeeper inspect --outputformat csv
 
+    Write-Host "Checking for updates"
     # since the update info is in csv, we'll need to search
     $updatesFound = $false
     foreach ($row in $updates) {
@@ -40,6 +42,7 @@ function ExecuteUpdates {
         }
     }
 
+    Write-Host "Action"
     if ($updatesFound) {
         $branchName = CreateNewBranch
         UpdatePackages
@@ -76,8 +79,5 @@ function CreateMergeRequest {
                                       -title "Bumping NuGet versions"
 }
 
-
 Write-Host "Running nukeeper with branchPrefix [$branchPrefix], gitLabProjectId [$gitLabProjectId], gitUserName [$gitUserName], gitUserEmail [$gitUserEmail], remoteUrl [$remoteUrl]"
-exit
-
 ExecuteUpdates -gitLabProjectId $gitLabProjectId
