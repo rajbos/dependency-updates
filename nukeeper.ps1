@@ -7,24 +7,21 @@ params (
   [string] $gitLabRemote
 )
 
+# import git functions
+Set-Location $PSScriptRoot
+. .\git.ps1
+
 function ExecuteUpdates {
     param (
         [string] $gitLabProjectId
     )
 
-    git --version
-    git config user.email $gitUserEmail
-    git config user.name $gitUserName
-    # setting token for auth
-    git remote rm gitlab # remove if already exists
-    git remote add gitlab https://xx:$($env:GitLabToken)@$($GitLabRemote)
-    git remote -v
-    git pull
+    SetupGit -PAT $env:GitLabToken -RemoteUrl $GitLabRemote -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
     
-    # install nukeeper
+    # install nukeeper in this location
     dotnet tool update nukeeper --tool-path .
 
-    # get update info
+    # get update info from NuKeeper
     $updates = .\nukeeper inspect --outputformat csv
 
     # since the update info is in csv, we'll need to search
@@ -58,24 +55,6 @@ function UpdatePackages {
     .\nukeeper update
 }
 
-function CreateNewBranch {
- # todo: create new branch with git
- $ISODATE = (Get-Date -UFormat '+%Y%m%d')
- $branchName = "$branchPrefix/$ISODATE"
- git checkout -b $branchName
- return $branchName
-}
-
-function CommitAndPushBranch {
-    param (
-        [string] $branchName
-    )
-
-    git add .
-    git commit -m "NuGet dependencies updated"
-    git push --set-upstream gitlab $branchName
-}
-
 function CreateMergeRequest {
     param(
         [string] $gitLabProjectId,
@@ -85,7 +64,7 @@ function CreateMergeRequest {
     )
 
     # get gitlab functions
-    . .\GitLab.ps1
+    . .\GitLab.ps1 -baseUrl $gitLabRemote -projectId $gitLabProjectId
 
     $sourceBranch = $branchName
     $sourceBranchPrefix = $branchPrefix

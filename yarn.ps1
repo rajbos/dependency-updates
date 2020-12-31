@@ -12,10 +12,8 @@ parameters(
     [string] $location
 )
 
-Write-Host " PowerShell version: $($PsVersionTable.PSVersion)"
-
-Set-Location $PSScriptRoot
 # import git functions
+Set-Location $PSScriptRoot
 . .\git.ps1
 
 function CreateMergeRequest {
@@ -41,8 +39,6 @@ function ExecuteUpdates {
     # git commands need to run in the calling path
     Set-Location ..\..\
     
-    git --version
-
     # clone a new copy of the repo with gitlabtoken that has write access (for a new branch)
     Set-Location ..\
     mkdir Temp

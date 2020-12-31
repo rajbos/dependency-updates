@@ -6,6 +6,7 @@ parameters (
 
 function GetToken{
     $token = $env:GitLabToken
+    
     if ($null -ne $token) {
         Write-Host "Found token as environment variable [GitLabToken]"
     }
