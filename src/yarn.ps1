@@ -1,5 +1,5 @@
 # global variables we use
-parameters(
+param (
     [parameter(Mandatory=$true,HelpMessage="")]
     [string] $branchPrefix, #= "yarn-updates",
     # get the Id of the project to push the MR into from the GitLab project overview page

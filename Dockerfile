@@ -19,4 +19,6 @@ RUN echo "Installing dotnetcore 3.1:" && \
     #- ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     rm dotnet.tar.gz
     
-COPY *.ps1 /
+COPY /src/*.ps1 /
+
+ENTRYPOINT ["pwsh", "start.ps1", "$@", "--"]

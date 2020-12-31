@@ -1,22 +1,22 @@
 # global variables we use
-params (
+param (
   [string] $branchPrefix,
   [string] $gitLabProjectId,
   [string] $gitUserName,
   [string] $gitUserEmail,
-  [string] $gitLabRemote
+  [string] $remoteUrl
 )
 
 # import git functions
-Set-Location $PSScriptRoot
-. .\git.ps1
+#Set-Location $PSScriptRoot
+#. .\git.ps1
 
 function ExecuteUpdates {
     param (
         [string] $gitLabProjectId
     )
 
-    SetupGit -PAT $env:GitLabToken -RemoteUrl $GitLabRemote -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
+    SetupGit -PAT $env:GitLabToken -RemoteUrl $remoteUrl -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
     
     # install nukeeper in this location
     dotnet tool update nukeeper --tool-path .
@@ -64,7 +64,7 @@ function CreateMergeRequest {
     )
 
     # get gitlab functions
-    . .\GitLab.ps1 -baseUrl $gitLabRemote -projectId $gitLabProjectId
+    . .\GitLab.ps1 -baseUrl $remoteUrl -projectId $gitLabProjectId
 
     $sourceBranch = $branchName
     $sourceBranchPrefix = $branchPrefix
@@ -75,5 +75,9 @@ function CreateMergeRequest {
                                       -targetBranch "main" `
                                       -title "Bumping NuGet versions"
 }
+
+
+Write-Host "Running nukeeper with branchPrefix [$branchPrefix], gitLabProjectId [$gitLabProjectId], gitUserName [$gitUserName], gitUserEmail [$gitUserEmail], remoteUrl [$remoteUrl]"
+exit
 
 ExecuteUpdates -gitLabProjectId $gitLabProjectId

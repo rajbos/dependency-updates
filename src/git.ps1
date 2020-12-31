@@ -1,5 +1,5 @@
 # global variables we use
-params (
+param (
   [string] $PAT,
   [string] $branchPrefix,
   [string] $gitUserName,
@@ -30,6 +30,12 @@ function SetupGit {
     git --version
     git config user.email $gitUserEmail
     git config user.name $gitUserName
-    # use token for auth
-    git clone https://xx:$($PAT)@$($RemoteUrl)
+
+    if ($PAT -ne '') {
+        # use token for auth
+        git clone "https://xx:$($PAT)@$($RemoteUrl)"
+    }
+    else {
+        git clone "https://$RemoteUrl"
+    }
 }

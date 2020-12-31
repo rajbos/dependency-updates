@@ -1,5 +1,5 @@
 # collection of GitLab api calls
-parameters (
+param (
     [string] $baseUrl,
     [integer] $projectId
 )
