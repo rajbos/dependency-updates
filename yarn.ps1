@@ -1,9 +1,15 @@
 # global variables we use
 parameters(
-    [string] $branchPrefix = "yarn-updates",
+    [parameter(Mandatory=$true,HelpMessage="")]
+    [string] $branchPrefix, #= "yarn-updates",
     # get the Id of the project to push the MR into from the GitLab project overview page
     # API doesn't have a great setting for this
-    [integer] $gitLabProjectId = 333
+    [parameter(Mandatory=$true)]
+    [integer] $gitLabProjectId, #= 333
+    [string] $gitUserName,
+    [string] $gitUserEmail,
+    [string] $gitLabRemote,
+    [string] $location
 )
 
 Write-Host " PowerShell version: $($PsVersionTable.PSVersion)"
@@ -41,14 +47,14 @@ function ExecuteUpdates {
     Set-Location ..\
     mkdir Temp
     Set-Location Temp
-    git clone https://xx:$($env:GitLabToken)@digitalgreenhouse.gitlab.host/floriday/sites/plugins/digital-clock-supply.git
-    Set-Location digital-clock-supply
+    git clone https://xx:$($env:GitLabToken)@$gitLabRemote
+    Set-Location $location
 
     # get updated npmrc file from root
-    Copy-Item ..\..\digital-clock-supply\.npmrc .
+    Copy-Item ..\..\$location\.npmrc .
 
-    git config user.email "CI-Pipeline@rfh.com"
-    git config user.name "CI Pipeline"
+    git config user.email "$gitUserName"
+    git config user.name "$gitUserEmail"
 
     # check for updates with yarn:
     yarn
