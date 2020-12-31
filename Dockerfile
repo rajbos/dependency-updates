@@ -1,4 +1,4 @@
-FROM .NET 5
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine
 
 RUN echo "Installing PowerShell" && \
     curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.0.2/powershell-7.0.2-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
