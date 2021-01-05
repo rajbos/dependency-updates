@@ -16,14 +16,14 @@ function ExecuteUpdates {
         [string] $gitLabProjectId
     )
 
-    SetupGit
-    
+    SetupGit    
+
     # install nukeeper in this location
-    dotnet tool update nukeeper --tool-path .
+    dotnet tool update nukeeper --tool-path $PSScriptRoot
 
     Write-Host "Calling nukeeper"
     # get update info from NuKeeper
-    $updates = .\nukeeper inspect --outputformat csv
+    $updates = .$PSScriptRoot\nukeeper inspect --outputformat csv
 
     Write-Host "Checking for updates"
     # since the update info is in csv, we'll need to search
@@ -42,7 +42,6 @@ function ExecuteUpdates {
         }
     }
 
-    Write-Host "Action"
     if ($updatesFound) {
         $branchName = CreateNewBranch
         UpdatePackages
@@ -55,7 +54,7 @@ function ExecuteUpdates {
 }
 
 function UpdatePackages {
-    .\nukeeper update
+    .$PSScriptRoot\nukeeper update
 }
 
 function CreateMergeRequest {
@@ -66,9 +65,14 @@ function CreateMergeRequest {
         [string] $branchPrefix
     )
 
-    # get gitlab functions
-    . .\GitLab.ps1 -baseUrl $remoteUrl -projectId $gitLabProjectId
+    Write-Host "Creating new GitLab merge request"
 
+    $gitDir = Get-Location
+    # get gitlab functions
+    Set-Location $PSScriptRoot
+    . .\gitlab.ps1 -baseUrl $remoteUrl -projectId $gitLabProjectId
+
+    Set-Location $gitDir
     $sourceBranch = $branchName
     $sourceBranchPrefix = $branchPrefix
 

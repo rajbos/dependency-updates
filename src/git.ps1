@@ -9,7 +9,13 @@ param (
 
 function CreateNewBranch {
     $ISODATE = (Get-Date -UFormat '+%Y%m%d')
-    $branchName = "$branchPrefix/$ISODATE"
+    if ($branchPrefix -eq "") {
+        $branchName = "$ISODATE"
+    }
+    else {
+        $branchName = "$branchPrefix/$ISODATE"
+    }
+    Write-Host "New branchname [$branchName]"
     git checkout -b $branchName
     return $branchName
    }
@@ -28,8 +34,7 @@ function CommitAndPushBranch {
 
 function SetupGit {
     git --version
-    git config user.email $gitUserEmail
-    git config user.name $gitUserName
+    Write-Host "Seting up git with url [$RemoteUrl], email address [$gitUserEmail] and user name [$gitUserName]"
 
     if ($RemoteUrl.StartsWith("https://")) {
         # remove https for further usage
@@ -46,5 +51,11 @@ function SetupGit {
 
     Write-Host "Cloning from url [$url]"
     git clone $url
-    ls
+    
+    # todo: load repo name from url
+    $repoName=$url.Split('/')[-1]
+    Set-Location $repoName
+    
+    git config user.email $gitUserEmail
+    git config user.name $gitUserName
 }
