@@ -1,7 +1,8 @@
 # collection of GitLab api calls
 param (
     [string] $baseUrl,
-    [integer] $projectId
+    [string] $projectId,
+    [string] $PAT
 )
 
 function GetToken{
@@ -27,10 +28,22 @@ function GetToken{
     return $token
 }
 
-$accesToken = GetToken
+function GetBaseUrl{
+    param (
+        [string] $baseUrl
+    )
+
+    $parts = $baseUrl.Split("/")
+    $url = "$($parts[0])//$($parts[2])/api/v4"
+
+    return $url
+}
+
+$accesToken = $PAT
+$baseUrl = GetBaseUrl -baseUrl $baseUrl
 
 if ($null -eq $accesToken) {
-    Write-Error "Cannot find access token to use for GitLab. Specify env:GitLabToken"
+    Write-Error "Cannot find access token to use for GitLab. Specify PAT"
     return
 }
 
@@ -46,7 +59,9 @@ function GetFromGitLab{
         return $response
     }
     catch {
-        Write-Host "Error $_"
+        Write-Error "Error calling gitlab url [$urlToCall]:"
+        Write-Error "  $_"
+        throw
     }
 }
 
@@ -63,7 +78,9 @@ function PostToGitLab{
         return $response
     }
     catch {
-        Write-Host "Error $_"
+        Write-Error "Error posting to url [$urlToCall]"
+        Write-Error "$_"
+        throw
     }
 }
 
@@ -83,10 +100,13 @@ function GetMergeRequests {
         [string] $projectId,
         [string] $state = "opened"
     )
-
+    
     $url = "projects/$projectId/merge_requests?state=$state"
+    Write-Host "Loading existing merge requests"
+    
     $response = GetFromGitLab -url $url
-    return $response
+    Write-Host "Loaded [$($response.Count)] existing merge requests"
+    return $response     
 }
 
 function CreateNewMergeRequest{
@@ -97,6 +117,7 @@ function CreateNewMergeRequest{
         [string] $title
     )
 
+    Write-Host "Posting new merge request for projectId [$projectId]"
     $url = "projects/$projectId/merge_requests"
     $bodyObject = @{
         source_branch = $sourceBranch
@@ -134,7 +155,7 @@ function CreateNewMergeRequestIfNoOpenOnes {
     }
 
     if ($existingBranchOpen) {
-        Write-Host "Halting execution. Merge the open source branch first"
+        Write-Warning "Halting execution. Merge the open source branch first"
         return
     }
 

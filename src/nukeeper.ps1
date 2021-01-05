@@ -34,7 +34,7 @@ function ExecuteUpdates {
         if ($row.IndexOf("possible updates") -gt -1) {
             Write-Host "Found updates row [$row]"; 
             if ($row.IndexOf("There are 0 possible updates") -gt -1) {
-                Write-Host "There are no upates"
+                Write-Host "There are no updates"
             }
             else {
                 Write-Host "There are updates"
@@ -61,18 +61,19 @@ function UpdatePackages {
 
 function CreateMergeRequest {
     param(
+        [Parameter(Mandatory=$true)]
         [string] $gitLabProjectId,
         [string] $branchName,
         [string] $targetBranch = "main",
         [string] $branchPrefix
     )
 
-    Write-Host "Creating new GitLab merge request"
+    Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId]"
 
     $gitDir = Get-Location
     # get gitlab functions
     Set-Location $PSScriptRoot
-    . .\gitlab.ps1 -baseUrl $remoteUrl -projectId $gitLabProjectId
+    . .\gitlab.ps1 -baseUrl $remoteUrl -projectId $gitLabProjectId -PAT $PAT
 
     Set-Location $gitDir
     $sourceBranch = $branchName
@@ -81,7 +82,7 @@ function CreateMergeRequest {
     CreateNewMergeRequestIfNoOpenOnes -projectId $gitLabProjectId `
                                       -sourceBranchPrefix $sourceBranchPrefix `
                                       -sourceBranch $sourceBranch `
-                                      -targetBranch "main" `
+                                      -targetBranch $targetBranch `
                                       -title "Bumping NuGet versions"
 }
 

@@ -7,7 +7,18 @@ param (
   [string] $RemoteUrl
 )
 
-function CreateNewBranch {
+function CheckBranchNotExists{
+    param (
+        [string] $newBranchName
+    )
+
+    $branches = git branch --list 
+    $existingBranch = $branches | Where-Object {$_.Replace("* ", "") -eq  $newBranchName}
+
+    return $null -eq $existingBranch -or $existingBranch.Length -eq 1
+}
+
+function GetNewBranchName {
     $ISODATE = (Get-Date -UFormat '+%Y%m%d')
     if ($branchPrefix -eq "") {
         $branchName = "$ISODATE"
@@ -15,8 +26,19 @@ function CreateNewBranch {
     else {
         $branchName = "$branchPrefix/$ISODATE"
     }
-    Write-Host "New branchname [$branchName]"
-    git checkout -b $branchName
+
+    return $branchName
+}
+
+function CreateNewBranch {
+   
+    $branchName = GetNewBranchName
+
+    if ($false -eq (CheckBranchNotExists -newBranchName $branchName)) {
+        Write-Host "New branchname [$branchName]"
+        git checkout -b $branchName
+    }
+    
     return $branchName
    }
 
@@ -34,7 +56,7 @@ function CommitAndPushBranch {
 
 function SetupGit {
     git --version
-    Write-Host "Seting up git with url [$RemoteUrl], email address [$gitUserEmail] and user name [$gitUserName]"
+    Write-Host "Setting up git with url [$RemoteUrl], email address [$gitUserEmail] and user name [$gitUserName]"
 
     if ($RemoteUrl.StartsWith("https://")) {
         # remove https for further usage
@@ -62,4 +84,9 @@ function SetupGit {
     git config user.name $gitUserName
 
     # todo: log branch we are in and add a setting for it
+    $branchName = GetNewBranchName
+    if (CheckBranchNotExists -newBranchName $branchName) {
+        Write-Host "Target branch with name [$branchName] already exists, will use it"
+        git checkout $branchName
+    }
 }

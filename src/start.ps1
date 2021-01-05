@@ -15,7 +15,7 @@ switch ($updateType) {
             -gitUserName $env:gitUserName `
             -gitUserEmail $env:gitUserEmail `
             -remoteUrl $env:remoteUrl `
-            -PAT $env:PAT
+            -PAT $env:PAT `
       }
     Default {
         Write-Host "Please specify an updateType to execute on the repository"
