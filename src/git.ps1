@@ -43,19 +43,23 @@ function SetupGit {
 
     if ($PAT -ne '') {
         # use token for auth
+        Write-Host "Found a personal access token to use for authentication"
         $url = "https://xx:$($PAT)@$($RemoteUrl)"
     }
     else {
         $url = "https://$RemoteUrl"
     }
 
-    Write-Host "Cloning from url [$url]"
+    Write-Host "Cloning from url [$RemoteUrl]"
     git clone $url
     
-    # todo: load repo name from url
-    $repoName=$url.Split('/')[-1]
+    # load repo name from url
+    $repoName=$url.Split('/')[-1].Split('.')[0]
+    Write-Host "Moving to repository [$repoName]"
     Set-Location $repoName
     
     git config user.email $gitUserEmail
     git config user.name $gitUserName
+
+    # todo: log branch we are in and add a setting for it
 }

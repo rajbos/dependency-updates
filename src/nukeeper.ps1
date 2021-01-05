@@ -4,12 +4,13 @@ param (
   [string] $gitLabProjectId,
   [string] $gitUserName,
   [string] $gitUserEmail,
-  [string] $remoteUrl
+  [string] $remoteUrl,
+  [string] $PAT
 )
 
 # import git functions
 Set-Location $PSScriptRoot
-. .\git.ps1 -PAT $env:GitLabToken -RemoteUrl $remoteUrl -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
+. .\git.ps1 -PAT $PAT -RemoteUrl $remoteUrl -gitUserEmail $gitUserEmail -gitUserName $gitUserName -branchPrefix $branchPrefix
 
 function ExecuteUpdates {
     param (
@@ -18,6 +19,7 @@ function ExecuteUpdates {
 
     SetupGit    
 
+    Write-Host "Updating NuKeeper"
     # install nukeeper in this location
     dotnet tool update nukeeper --tool-path $PSScriptRoot
 
@@ -31,7 +33,7 @@ function ExecuteUpdates {
     foreach ($row in $updates) {
         if ($row.IndexOf("possible updates") -gt -1) {
             Write-Host "Found updates row [$row]"; 
-            if ($row.IndexOf("0 possible updates") -gt -1) {
+            if ($row.IndexOf("There are 0 possible updates") -gt -1) {
                 Write-Host "There are no upates"
             }
             else {
