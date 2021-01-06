@@ -17,9 +17,7 @@ jobs:
       run: docker build -t local-dependency-updates:latest .
 
     - name: Setup GitHub Container Registry
-      run: echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
-      with:
-          password: ${{ secrets.GITHUB_PAT }}
+      run: echo ${{ secrets.GITHUB_PAT }} | docker login ghcr.io -u USERNAME --password-stdin
 
     - name: push to GitHub Container Registry
       run:  docker push ghcr.io/rajbos/local-dependency-updates:latest
