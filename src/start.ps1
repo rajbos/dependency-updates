@@ -5,8 +5,10 @@ param (
 
 function HandleUpdatesWithGit {
     $branchName = CreateNewBranch
-    CommitAndPushBranch -branchName $branchName
+    Write-Host "Updates will be added to branch [$branchName]"
+    CommitAndPushBranch -branchName $branchName | Out-Null
 
+    Write-Host "Updates added to branch [$branchName]"
     return $branchName
 }
 
@@ -15,11 +17,11 @@ function CreateMergeRequestGitLab {
         [Parameter(Mandatory=$true)]
         [string] $gitLabProjectId,
         [string] $branchName,
-        [string] $targetBranch = "main",
-        [string] $branchPrefix
+        [string] $branchPrefix,        
+        [string] $targetBranch = "main"
     )
 
-    Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId]"
+    Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId] from sourcebranch [$branchName] with prefix [$branchPrefix] to target branch [$targetBranch]"
 
     $gitDir = Get-Location
     # get gitlab functions
@@ -65,6 +67,7 @@ switch ($updateType) {
 if ($updatesAvailable) {
     Write-Host "Found updates, handling them with Git"
     $branchName = HandleUpdatesWithGit
+    Write-Host "Updates are in branch [$branchName]"
     if ($null -eq $branchName -or $branchName.Length -eq 0) {
         Write-Warning "Something went wrong with Git handling. Stopping further execution"
         return
@@ -73,7 +76,10 @@ if ($updatesAvailable) {
     switch ($targetType) {
         "gitlab" {  
             Write-Host "Running against GitLab setup"
-            CreateMergeRequestGitLab -branchName $branchName -branchPrefix $branchPrefix -gitLabProjectId $gitLabProjectId
+            if ($null -eq $env:gitLabProjectId) {
+                Write-Error "Please specify [$$env:gitLabProjectId] with a projectId to use. This number can be found on the project page"
+            }
+            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId
         }
         Default {
             Write-Error "Please specify a targetTpe to target. Supported: ""gitlab"""

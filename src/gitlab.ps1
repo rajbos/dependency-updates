@@ -117,7 +117,7 @@ function CreateNewMergeRequest{
         [string] $title
     )
 
-    Write-Host "Posting new merge request for projectId [$projectId]"
+    Write-Host "Posting new merge request for projectId [$projectId] with source branch [$sourceBranch] and target branch [$targetBranch]"
     $url = "projects/$projectId/merge_requests"
     $bodyObject = @{
         source_branch = $sourceBranch
@@ -140,6 +140,9 @@ function CreateNewMergeRequestIfNoOpenOnes {
         [string] $targetBranch,
         [string] $title
     )
+
+    Write-Host "Checking for open MR's against the target branch [$branchName] from source branch that has prefix [$sourceBranchPrefix]"
+    
     $mergeRequests = GetMergeRequests -projectId $projectId
 
     $existingBranchOpen = $false

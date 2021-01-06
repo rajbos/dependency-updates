@@ -12,12 +12,14 @@ function CheckBranchNotExists{
         [string] $newBranchName
     )
 
-    $branches = git branch --list 
-    Write-Host "Existing branches: $branches"
-    Write-Host "Desired new branch name: $newBranchName"
-    $existingBranch = $branches | Where-Object {$_.Replace("* ", "") -eq $newBranchName}
+    $branches = git branch --list --all 
+    Write-Host "Existing branches found: [$branches]"
+    Write-Host "Desired new branch name: [$newBranchName]"
+    # search without spaces and the * for the current branch
+    $existingBranch = $branches | Where-Object {$_.Replace("* ", "").Replace("  remotes/origin/", "") -eq "$newBranchName"}
 
-    $notExists = ($null -eq $existingBranch -or $existingBranch.Count -eq 1)
+    Write-Host "existingBranch = $existingBranch"
+    $notExists = ($null -eq $existingBranch -and $existingBranch.Count -ne 1)
     if ($notExists) {
         Write-Host "Desired new branch name does not exist"
     }
@@ -86,7 +88,7 @@ function SetupGit {
     
     # load repo name from url
     $repoName=$url.Split('/')[-1].Split('.')[0]
-    Write-Host "Moving to repository [$repoName]"
+    Write-Host "Moving to directory [$repoName]"
     Set-Location $repoName
     
     git config user.email $gitUserEmail
