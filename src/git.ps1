@@ -13,9 +13,18 @@ function CheckBranchNotExists{
     )
 
     $branches = git branch --list 
-    $existingBranch = $branches | Where-Object {$_.Replace("* ", "") -eq  $newBranchName}
+    Write-Host "Existing branches: $branches"
+    Write-Host "Desired new branch name: $newBranchName"
+    $existingBranch = $branches | Where-Object {$_.Replace("* ", "") -eq $newBranchName}
 
-    return $null -eq $existingBranch -or $existingBranch.Length -eq 1
+    $notExists = ($null -eq $existingBranch -or $existingBranch.Count -eq 1)
+    if ($notExists) {
+        Write-Host "Desired new branch name does not exist"
+    }
+    else {
+        Write-Host "Desired new branch name already exists"
+    }
+    return $notExists
 }
 
 function GetNewBranchName {
@@ -34,8 +43,8 @@ function CreateNewBranch {
    
     $branchName = GetNewBranchName
 
-    if ($false -eq (CheckBranchNotExists -newBranchName $branchName)) {
-        Write-Host "New branchname [$branchName]"
+    if ($true -eq (CheckBranchNotExists -newBranchName $branchName)) {
+        Write-Host "Creating new branchName [$branchName]"
         git checkout -b $branchName
     }
     
@@ -85,7 +94,7 @@ function SetupGit {
 
     # todo: log branch we are in and add a setting for it
     $branchName = GetNewBranchName
-    if (CheckBranchNotExists -newBranchName $branchName) {
+    if ($false -eq (CheckBranchNotExists -newBranchName $branchName)) {
         Write-Host "Target branch with name [$branchName] already exists, will use it"
         git checkout $branchName
     }
