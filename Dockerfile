@@ -21,5 +21,7 @@ RUN echo "Installing dotnetcore 3.1:" && \
     
 COPY /src/*.ps1 /
 
+COPY /src/*.ps1 /src/
+
 # ENTRYPOINT ["pwsh", "start.ps1", "-updateType $1 -targetType $2"] 
 #CMD ["pwsh", "start.ps1", "-updateType $1 -targetType $2"]
