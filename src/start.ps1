@@ -16,8 +16,6 @@ function ExtractParametersFromGitLabEnvironmentVariables {
     Write-Host " - gitLabProjectId: [$($env:gitLabProjectId)]"
     Write-Host " - gitUserEmail: [$($env:gitUserEmail)]"
     Write-Host " - gitUserName: [$($env:gitUserName)]"
-
-    $env:PAT = $env:CI_JOB_TOKEN
 }
 
 function HandleUpdatesWithGit {

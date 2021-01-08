@@ -91,6 +91,18 @@ function SetupGit {
             Write-Error "Cannot clone repository. Seems like we need authentication. Please provide setting [$$env:PAT]"
             throw
         }
+
+        if ($obj.ToString().Contains("fatal: Authentication failed for")) {
+            Write-Error "Error cloning git repo:"
+            Write-Error $obj.ToString()
+            throw
+        }
+
+        if ($obj.ToString().Contains("fatal")) {
+            Write-Error "Error cloning git repo:"
+            Write-Error $obj.ToString()
+            throw
+        }
     }
     ls
 
