@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
+      - test
 
 jobs:
-  build-and-push:
+  build-and-push-main:
 
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
     - uses: actions/checkout@v1
@@ -21,3 +23,20 @@ jobs:
 
     - name: push to GitHub Container Registry
       run:  docker push ghcr.io/rajbos/local-dependency-updates:latest
+
+  build-and-push-branch:
+
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Build the Docker image
+      run: docker build -t ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/} .
+
+    - name: Setup GitHub Container Registry
+      run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: push to GitHub Container Registry
+      run:  docker push ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/}

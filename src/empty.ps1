@@ -1,8 +1,5 @@
 Write-Host "Welcome to the dependency updater"
 
 # search for the location of the start file
-Get-Childitem "start.ps1" -Recurse
-
-cd ~
-
-Get-Childitem "start.ps1" -Recurse
+Write-Host "Testing GitLab integration"
+Write-Host "CI_PROJECT_ID from environment= [$($env:CI_PROJECT_ID)]"
