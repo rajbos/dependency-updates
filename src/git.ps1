@@ -86,7 +86,7 @@ function SetupGit {
     Write-Host "Cloning from url [$RemoteUrl]"
     $status = (git clone $url 2>&1)
     Write-Host "Status: " $status
-    if ($null -ne $status -and $status.ErrorDetails.Message.StartsWith("fatal: could not read Username for ")) {
+    if ($null -ne $status -and $status.Contains("fatal: could not read Username for ")) {
         Write-Error "Cannot clone repository. Seems like we need authentication. Please provide setting [$env:PAT]"
     }
     # load repo name from url
