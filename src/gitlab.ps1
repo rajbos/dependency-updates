@@ -148,7 +148,7 @@ function CreateNewMergeRequestIfNoOpenOnes {
     $existingBranchOpen = $false
     foreach ($mr in $mergeRequests | Where-Object {$_.target_branch -eq $targetBranch}) {
         if ($mr.source_branch.StartsWith($sourceBranchPrefix)) {
-            Write-Host "Found an existing MR: [$($mr.web_url)]"
+            Write-Host "Found an existing MR: [$($mr.web_url) ]"
             $existingBranchOpen = $true
             break
         }
