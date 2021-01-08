@@ -87,10 +87,14 @@ function SetupGit {
     $status = (git clone $url 2>&1)
     Write-Host "Status: " $status
     Write-Host $status.GetType()
-    if ($status.ToString().Contains("fatal: could not read Username for")) {
+    foreach ($obj in $status) {
+        Write-Host "1: "$obj.GetType
+        Write-Host "2: " $obj
+    if ($obj.ToString().Contains("fatal: could not read Username for")) {
         Write-Error "Cannot clone repository. Seems like we need authentication. Please provide setting [$env:PAT]"
         throw
     }
+}
     # load repo name from url
     $repoName=$url.Split('/')[-1].Split('.')[0]
     Write-Host "Moving to directory [$repoName]"
