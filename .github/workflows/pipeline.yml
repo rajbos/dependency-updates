@@ -23,6 +23,7 @@ jobs:
         settingsPath: /src/PSSASettings.psd1
 
     - name: Run Snyk to check Docker image for vulnerabilities
+      if: ${{ false }}  # disable for now
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -54,7 +55,8 @@ jobs:
         settingsPath: /src/PSSASettings.psd1
 
     - name: Run Snyk to check Docker image for vulnerabilities
-      uses: snyk/actions/docker@master
+      uses: snyk/actions/docker@master      
+      if: ${{ false }}  # disable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
