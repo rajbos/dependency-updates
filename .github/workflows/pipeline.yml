@@ -32,6 +32,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: PS Lint
+      uses: devblackops/github-action-psscriptanalyzer@master
+
     - name: Build the Docker image
       run: docker build -t ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/} .
 
