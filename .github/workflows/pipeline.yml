@@ -39,10 +39,11 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: PS Lint
-      if: ${{ false }}  # disable for no
+      if: ${{ true }}  # disable for now
       uses: devblackops/github-action-psscriptanalyzer@master
       with:
         failOnWarnings: false
+        settingsPath: /src/PSSASettings.psd1
 
     - name: Build the Docker image
       run: docker build -t ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/} .
