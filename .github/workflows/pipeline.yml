@@ -22,6 +22,13 @@ jobs:
         failOnWarnings: false
         settingsPath: /src/PSSASettings.psd1
 
+    - name: Run Snyk to check Docker image for vulnerabilities
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: Dockerfile
+
     - name: Build the Docker image
       run: docker build -t ghcr.io/rajbos/local-dependency-updates:latest .
 
