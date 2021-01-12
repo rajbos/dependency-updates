@@ -123,6 +123,6 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && yarn --version
 
 COPY docker-node-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["docker-node-entrypoint.sh"]
+#ENTRYPOINT ["docker-node-entrypoint.sh"]
 
 CMD [ "node" ] 
