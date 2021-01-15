@@ -4,12 +4,11 @@ param (
 )
 
 function ExtractParametersFromGitLabEnvironmentVariables {
-    # PAT  cannot use CI PAT since it has no repo rights
-    $env:remoteUrl = "$($env:CI_PROJECT_URL).git"
-    $env:gitLabProjectId = $env:CI_PROJECT_ID
-    $env:gitUserEmail = $env:GITLAB_USER_EMAIL
-    $env:gitUserName = $env:GITLAB_USER_NAME
-    #-branchPrefix $env:branchPrefix
+    # PAT: cannot use CI PAT since it has no repo rights
+    if ($null -ne $env:CI_PROJECT_URL) { $env:remoteUrl = "$($env:CI_PROJECT_URL).git" }
+    if ($null -ne $env:CI_PROJECT_ID) { $env:gitLabProjectId = $env:CI_PROJECT_ID }
+    if ($null -ne $env:GITLAB_USER_EMAIL) { $env:gitUserEmail = $env:GITLAB_USER_EMAIL }
+    if ($null -ne $env:GITLAB_USER_NAME) { $env:gitUserName = $env:GITLAB_USER_NAME }
 
     Write-Host "Loaded runtime parameters from GitLab environment variables:"
     Write-Host " - remote url: [$($env:remoteUrl)]"
