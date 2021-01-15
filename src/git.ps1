@@ -83,14 +83,7 @@ function SetupGit {
         $url = "https://$RemoteUrl"
     }
     
-    # load repo name from url
-    $repoName=$url.Split('/')[-1].Split('.')[0]
-    if (Test-Path $repoName) {
-        # repo directory already exists, create a new folder
-        $repoName = "$($repoName)_src"
-        Write_Host "Found a directory with the same name as the repo, creating a new directory with name [$repoName] to avoid issues"
-    }
-
+    $repoName="src" 
     # create the (new) the folder and move into it
     New-Item -Path $repoName -ItemType Directory | Out-Null   
     Set-Location $repoName
