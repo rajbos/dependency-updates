@@ -18,14 +18,6 @@ RUN echo "Installing dotnetcore 3.1:" && \
     # skip adding the symlink since that already is available with .NET 5.0 in it
     #- ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     rm dotnet.tar.gz
-    
-COPY /src/*.ps1 /
-
-COPY /src/*.ps1 /dependency-updates/
-
-# ENTRYPOINT ["pwsh", "start.ps1", "-updateType $1 -targetType $2"] 
-#CMD ["pwsh", "start.ps1", "-updateType $1 -targetType $2"]
-
 
 # Include node setup in the image as well
 ENV NODE_VERSION 10.23.1
@@ -122,7 +114,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   # smoke test
   && yarn --version
 
-COPY docker-node-entrypoint.sh /usr/local/bin/
-#ENTRYPOINT ["docker-node-entrypoint.sh"]
+COPY /src/*.ps1 /
+COPY /src/*.ps1 /dependency-updates/
 
 CMD [ "pwsh" ] 
