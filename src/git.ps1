@@ -92,10 +92,10 @@ function SetupGit {
     }
 
     # create the (new) the folder and move into it
-    New-Item -Path $repoName -ItemType Directory    
+    New-Item -Path $repoName -ItemType Directory | Out-Null   
     Set-Location $repoName
 
-    Write-Host "Cloning from url [$RemoteUrl]"
+    Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
     $status = (git clone $url . 2>&1)
     foreach ($obj in $status) {
         Write-Host $obj
