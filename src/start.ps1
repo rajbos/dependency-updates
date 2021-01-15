@@ -81,8 +81,15 @@ switch ($updateType) {
 
         $updatesAvailable = ExecuteUpdates
       }
+    "yarn" {
+        # run yarn updates on repo
+        Write-Host "Running yarn updates"
+        . $PSScriptRoot\yarn.ps1
+
+        $updatesAvailable = (ExecuteUpdates)[-1]
+      }
     Default {
-        Write-Error "Please specify an updateType to execute on the repository. Supported: ""nuget"""
+        Write-Error "Please specify an updateType to execute on the repository. Supported: [""nuget"", ""yarn""]"
     }
 }
 
