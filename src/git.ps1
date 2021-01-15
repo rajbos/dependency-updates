@@ -88,9 +88,11 @@ function SetupGit {
     if (Test-Path $repoName) {
         # repo directory already exists, create a new folder
         $repoName = "$($repoName)_src"
-        New-Item -Path $repoName -ItemType Directory
+        Write_Host "Found a directory with the same name as the repo, creating a new directory with name [$repoName] to avoid issues"
     }
-    # move to the folder and clone the repo in it
+
+    # create the (new) the folder and move into it
+    New-Item -Path $repoName -ItemType Directory    
     Set-Location $repoName
 
     Write-Host "Cloning from url [$RemoteUrl]"
