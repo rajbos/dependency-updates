@@ -82,14 +82,40 @@ function SetupGit {
     else {
         $url = "https://$RemoteUrl"
     }
-
-    Write-Host "Cloning from url [$RemoteUrl]"
-    git clone $url
     
     # load repo name from url
     $repoName=$url.Split('/')[-1].Split('.')[0]
-    Write-Host "Moving to directory [$repoName]"
+    if (Test-Path $repoName) {
+        # repo directory already exists, create a new folder
+        $repoName = "$($repoName)_src"
+        Write_Host "Found a directory with the same name as the repo, creating a new directory with name [$repoName] to avoid issues"
+    }
+
+    # create the (new) the folder and move into it
+    New-Item -Path $repoName -ItemType Directory | Out-Null   
     Set-Location $repoName
+
+    Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
+    $status = (git clone $url . 2>&1)
+    foreach ($obj in $status) {
+        Write-Host $obj
+        if ($obj.ToString().Contains("fatal: could not read Username for")) {
+            Write-Error "Cannot clone repository. Seems like we need authentication. Please provide setting [$$env:PAT]"
+            throw
+        }
+
+        if ($obj.ToString().Contains("fatal: Authentication failed for")) {
+            Write-Error "Error cloning git repo with authentication failure:"
+            Write-Error $obj.ToString()
+            throw
+        }
+
+        if ($obj.ToString().Contains("fatal")) {
+            Write-Error "Error cloning git repo:"
+            Write-Error $obj.ToString()
+            throw
+        }
+    }
     
     git config user.email $gitUserEmail
     git config user.name $gitUserName

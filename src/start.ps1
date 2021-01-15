@@ -3,6 +3,21 @@ param (
     [string] $targetType
 )
 
+function ExtractParametersFromGitLabEnvironmentVariables {
+    # PAT  cannot use CI PAT since it has no repo rights
+    $env:remoteUrl = "$($env:CI_PROJECT_URL).git"
+    $env:gitLabProjectId = $env:CI_PROJECT_ID
+    $env:gitUserEmail = $env:GITLAB_USER_EMAIL
+    $env:gitUserName = $env:GITLAB_USER_NAME
+    #-branchPrefix $env:branchPrefix
+
+    Write-Host "Loaded runtime parameters from GitLab environment variables:"
+    Write-Host " - remote url: [$($env:remoteUrl)]"
+    Write-Host " - gitLabProjectId: [$($env:gitLabProjectId)]"
+    Write-Host " - gitUserEmail: [$($env:gitUserEmail)]"
+    Write-Host " - gitUserName: [$($env:gitUserName)]"
+}
+
 function HandleUpdatesWithGit {
     $branchName = CreateNewBranch
     Write-Host "Updates will be added to branch [$branchName]"
@@ -40,7 +55,15 @@ function CreateMergeRequestGitLab {
 }
 
 # main execution code
-Write-Host "updateType = [$updateType], targetType=[$targetType], gitUserName = [$($env:gitUserName)], RemoteUrl=[$($env:remoteUrl)]"
+Write-Host "updateType = [$updateType], targetType=[$targetType]"
+
+switch ($targetType) {
+    "gitlab" {
+        ExtractParametersFromGitLabEnvironmentVariables
+      }
+    Default {}
+}
+
 
 # import git functions
 Set-Location $PSScriptRoot

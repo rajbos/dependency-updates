@@ -4,14 +4,31 @@ on:
   push:
     branches:
       - main
+      - test
 
 jobs:
-  build-and-push:
+  build-and-push-main:
 
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
     - uses: actions/checkout@v1
+
+    - name: PS Lint
+      if: ${{ true }}  # enable for now
+      uses: devblackops/github-action-psscriptanalyzer@master
+      with:
+        failOnWarnings: false
+        settingsPath: /src/PSSASettings.psd1
+
+    - name: Run Snyk to check Docker image for vulnerabilities
+      if: ${{ false }}  # disable for now
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: Dockerfile
 
     - name: Build the Docker image
       run: docker build -t ghcr.io/rajbos/local-dependency-updates:latest .
@@ -19,5 +36,37 @@ jobs:
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: push to GitHub Container Registry
+    - name: Push to GitHub Container Registry
       run:  docker push ghcr.io/rajbos/local-dependency-updates:latest
+
+  build-and-push-branch:
+
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: PS Lint
+      if: ${{ true }}  # enable for now
+      uses: devblackops/github-action-psscriptanalyzer@master
+      with:
+        failOnWarnings: false
+        settingsPath: /src/PSSASettings.psd1
+
+    - name: Run Snyk to check Docker image for vulnerabilities
+      uses: snyk/actions/docker@master      
+      if: ${{ false }}  # disable for now
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: Dockerfile
+
+    - name: Build the Docker image
+      run: docker build -t ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/} .
+
+    - name: Setup GitHub Container Registry
+      run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Push to GitHub Container Registry
+      run:  docker push ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/}
