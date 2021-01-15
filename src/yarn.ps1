@@ -1,9 +1,13 @@
 function ExecuteUpdates {
    
     # check for updates with yarn:
+    Write-Host "yarn:"
     yarn
+    Write-Host "yarn eslint:"
     yarn eslint
+    Write-Host "yarn build:"
     yarn build
+    Write-Host "yarn upgrade:"
     yarn upgrade
 
     # use git status to check if there are any changed files
