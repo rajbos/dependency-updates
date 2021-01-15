@@ -55,7 +55,7 @@ function CreateMergeRequestGitLab {
 }
 
 # main execution code
-Write-Host "updateType = [$updateType], targetType=[$targetType], gitUserName = [$($env:gitUserName)], RemoteUrl=[$($env:remoteUrl)]"
+Write-Host "updateType = [$updateType], targetType=[$targetType]"
 
 switch ($targetType) {
     "gitlab" {
