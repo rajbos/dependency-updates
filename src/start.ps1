@@ -32,7 +32,8 @@ function CreateMergeRequestGitLab {
         [string] $gitLabProjectId,
         [string] $branchName,
         [string] $branchPrefix,        
-        [string] $targetBranch = "main"
+        [string] $targetBranch = "main",
+        [string] $mergeRequestTitle = "Bumping NuGet versions"
     )
 
     Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId] from sourcebranch [$branchName] with prefix [$branchPrefix] to target branch [$targetBranch]"
@@ -50,7 +51,7 @@ function CreateMergeRequestGitLab {
                                       -sourceBranchPrefix $sourceBranchPrefix `
                                       -sourceBranch $sourceBranch `
                                       -targetBranch $targetBranch `
-                                      -title "Bumping NuGet versions"
+                                      -title $mergeRequestTitle
 }
 
 function Get-UpdatesAvailable {
@@ -79,18 +80,36 @@ function Get-UpdatesAvailable {
 }
 
 function HandleUpdates {
+    param (
+        [string] $mergeRequestTitle
+    )
     switch ($targetType) {
         "gitlab" {  
             Write-Host "Running against GitLab setup"
             if ($null -eq $env:gitLabProjectId) {
                 Write-Error "Please specify [$$env:gitLabProjectId] with a projectId to use. This number can be found on the project page"
             }
-            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId
+            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId -mergeRequestTitle $mergeRequestTitle
         }
         Default {
             Write-Error "Please specify a targetTpe to target. Supported: ""gitlab"""
         }
     }
+}
+
+function GetMergeRequestTitle {
+    param (
+        [string] $updateType
+    )
+
+    switch ($targetType) {
+        "yarn" { return "Bumping NPM package versions"; }
+        "nuget" { return "Bumping NuGet packages versions"; }
+        Default {
+            Write-Error "Please specify an targetType to execute on the repository. Supported: ""gitlab"""
+        }
+    }
+
 }
 
 function Main {
@@ -126,7 +145,8 @@ function Main {
             return
         }
 
-        HandleUpdates
+        $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
+        HandleUpdates -mergeRequestTitle $mergeRequestTitle
     }
 }
 
