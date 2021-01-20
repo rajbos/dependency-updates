@@ -53,7 +53,7 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: PS Lint
-      if: ${{ false }}  # enable for now
+      if: ${{ true }}  # enable for now
       uses: devblackops/github-action-psscriptanalyzer@master
       with:
         failOnWarnings: false
