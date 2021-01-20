@@ -76,3 +76,6 @@ jobs:
 
     - name: Push to GitHub Container Registry
       run:  docker push $containertag:${GITHUB_REF##*/}
+
+    - name: Cleanup GitHub Container Registry login data
+      run: docker logout
