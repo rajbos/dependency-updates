@@ -72,7 +72,7 @@ jobs:
         CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
         #todo: use env var if possible
-        image: ghcr.io/rajbos/local-dependency-updates:test
+        #image: ghcr.io/rajbos/local-dependency-updates:test
         args: --file=Dockerfile
 
     - name: Upload Snyk scan result to GitHub Code Scanning
