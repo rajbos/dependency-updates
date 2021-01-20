@@ -75,6 +75,11 @@ jobs:
         image: ghcr.io/rajbos/local-dependency-updates:test
         args: --file=Dockerfile
 
+    - name: Upload Snyk scan result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
+
     - name: Build the Docker image
       run: docker build -t $containertag:${GITHUB_REF##*/} .
 
