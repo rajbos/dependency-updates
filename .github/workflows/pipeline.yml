@@ -8,6 +8,7 @@ on:
 
 env:  
   containertag: ghcr.io/rajbos/local-dependency-updates
+  containerhost: https://ghcr.io
 
 jobs:
   build-and-push-main:
@@ -30,17 +31,21 @@ jobs:
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
+      with:      
+        #todo: use env var if possible
         image: Dockerfile
 
     - name: Build the Docker image
       run: docker build -t $containertag .
 
     - name: Setup GitHub Container Registry
-      run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
       run:  docker push $containertag
+    
+    - name: Cleanup GitHub Container Registry login data
+      run: docker logout $containerhost
 
 
 
@@ -66,13 +71,17 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
+        #todo: use env var if possible
         image: ghcr.io/rajbos/local-dependency-updates:test
 
     - name: Build the Docker image
       run: docker build -t $containertag:${GITHUB_REF##*/} .
 
     - name: Setup GitHub Container Registry
-      run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
       run:  docker push $containertag:${GITHUB_REF##*/}
+
+    - name: Cleanup GitHub Container Registry login data
+      run: docker logout $containerhost
