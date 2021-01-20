@@ -69,11 +69,11 @@ jobs:
 
     - name: Run Snyk to check Docker image for vulnerabilities
       uses: snyk/actions/docker@master      
-      if: ${{ false }}  # disable for now
+      if: ${{ true }}  # disable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        image: "{{container-tag}}"
+        image: "$containertag:${GITHUB_REF##*/}"
 
     - name: Build the Docker image
       run: docker build -t $containertag:${GITHUB_REF##*/} .
