@@ -74,10 +74,10 @@ jobs:
       run: docker build -t $containertag:${GITHUB_REF##*/} .
 
     - name: Setup GitHub Container Registry
-      run: echo "${{ secrets.GH_PAT }}" | docker login ${{ containerhost }} -u ${{ github.actor }} --password-stdin
+      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
       run:  docker push $containertag:${GITHUB_REF##*/}
 
     - name: Cleanup GitHub Container Registry login data
-      run: docker logout ${{ containerhost }}
+      run: docker logout $containerhost
