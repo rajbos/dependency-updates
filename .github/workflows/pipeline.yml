@@ -6,6 +6,9 @@ on:
       - main
       - test
 
+env:
+  container-tag: ghcr.io/rajbos/local-dependency-updates:latest
+
 jobs:
   build-and-push-main:
 
@@ -23,7 +26,7 @@ jobs:
         settingsPath: /src/PSSASettings.psd1
 
     - name: Run Snyk to check Docker image for vulnerabilities
-      if: ${{ false }}  # disable for now
+      if: ${{ true }}  # disable for now
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -31,13 +34,13 @@ jobs:
         image: Dockerfile
 
     - name: Build the Docker image
-      run: docker build -t ghcr.io/rajbos/local-dependency-updates:latest .
+      run: docker build -t {{container-tag}} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push ghcr.io/rajbos/local-dependency-updates:latest
+      run:  docker push {{container-tag}}
 
   build-and-push-branch:
 
@@ -60,7 +63,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        image: Dockerfile
+        image: ghcr.io/rajbos/local-dependency-updates:latest
 
     - name: Build the Docker image
       run: docker build -t ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/} .
