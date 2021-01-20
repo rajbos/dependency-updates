@@ -66,13 +66,14 @@ jobs:
 
     - name: Run Snyk to check Docker image for vulnerabilities
       uses: snyk/actions/docker@master      
-      if: ${{ false }}  # disable for now
+      if: ${{ true }}  # enable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
         #todo: use env var if possible
         image: ghcr.io/rajbos/local-dependency-updates:test
+        args: --file=Dockerfile
 
     - name: Build the Docker image
       run: docker build -t $containertag:${GITHUB_REF##*/} .
