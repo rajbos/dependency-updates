@@ -106,7 +106,7 @@ function GetMergeRequestTitle {
         "yarn" { return "Bumping NPM package versions"; }
         "nuget" { return "Bumping NuGet packages versions"; }
         Default {
-            Write-Error "Please specify an targetType to execute on the repository. Supported: ""gitlab"""
+            Write-Error "Please specify an targetType to execute on the repository. Supported: ""gitlab"", got value [$targetType]"
         }
     }
 
