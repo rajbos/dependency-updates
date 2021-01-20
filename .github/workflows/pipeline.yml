@@ -55,8 +55,7 @@ jobs:
     if: github.ref != 'refs/heads/main'
     
     env:
-      containertag: "ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/}"
-      mycontainertag: ghcr.io/rajbos/local-dependency-updates
+      containertag: ghcr.io/rajbos/local-dependency-updates
 
     steps:
     - uses: actions/checkout@v1
@@ -76,14 +75,11 @@ jobs:
       with:
         image: "{{container-tag}}"
 
-    - name: Build the Docker image -my
-      run: docker build -t $mycontainertag:${GITHUB_REF##*/} .
-    
     - name: Build the Docker image
-      run: docker build -t $containertag .
+      run: docker build -t $containertag:${GITHUB_REF##*/} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push $containertag
+      run:  docker push $containertag:${GITHUB_REF##*/}
