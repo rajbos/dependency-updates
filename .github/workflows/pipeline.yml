@@ -69,17 +69,17 @@ jobs:
 
     - name: Run Snyk to check Docker image for vulnerabilities
       uses: snyk/actions/docker@master      
-      if: ${{ true }}  # disable for now
+      if: ${{ false }}  # disable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         image: "{{container-tag}}"
 
     - name: Build the Docker image
-      run: docker build -t {{container-tag}} .
+      run: docker build -t ${{container-tag}} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push {{container-tag}}
+      run:  docker push ${{container-tag}}
