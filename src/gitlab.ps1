@@ -117,7 +117,7 @@ function CreateNewMergeRequest{
         [string] $title
     )
 
-    Write-Host "Posting new merge request for projectId [$projectId] with source branch [$sourceBranch] and target branch [$targetBranch]"
+    Write-Host "Posting new merge request for projectId [$projectId] with source branch [$sourceBranch] and target branch [$targetBranch] using title [$title]"
     $url = "projects/$projectId/merge_requests"
     $bodyObject = @{
         source_branch = $sourceBranch
@@ -164,7 +164,7 @@ function CreateNewMergeRequestIfNoOpenOnes {
 
     $mr = CreateNewMergeRequest -projectId $projectId -sourceBranch $sourceBranch -targetBranch $targetBranch -title $title
     if ($mr) {
-        Write-Host "Created new Merge Request with url [$($mr.web_url)]"
+        Write-Host "Created new Merge Request with url [$($mr.web_url)] and title [$title]"
     }
 }
 
