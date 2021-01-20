@@ -49,9 +49,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/main'
     
-    env:
-      containertag: ghcr.io/rajbos/local-dependency-updates
-
     steps:
     - uses: actions/checkout@v1
 
