@@ -6,6 +6,9 @@ on:
       - main
       - test
 
+env:  
+  containertag: ghcr.io/rajbos/local-dependency-updates
+
 jobs:
   build-and-push-main:
 
@@ -31,19 +34,21 @@ jobs:
         image: Dockerfile
 
     - name: Build the Docker image
-      run: docker build -t ghcr.io/rajbos/local-dependency-updates:latest .
+      run: docker build -t $containertag:${GITHUB_REF##*/} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push ghcr.io/rajbos/local-dependency-updates:latest
+      run:  docker push $containertag:${GITHUB_REF##*/}
+
+
 
   build-and-push-branch:
 
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/main'
-
+    
     steps:
     - uses: actions/checkout@v1
 
@@ -59,14 +64,15 @@ jobs:
       if: ${{ false }}  # disable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
-        image: Dockerfile
+        image: ghcr.io/rajbos/local-dependency-updates:test
 
     - name: Build the Docker image
-      run: docker build -t ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/} .
+      run: docker build -t $containertag:${GITHUB_REF##*/} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push ghcr.io/rajbos/local-dependency-updates:${GITHUB_REF##*/}
+      run:  docker push $containertag:${GITHUB_REF##*/}

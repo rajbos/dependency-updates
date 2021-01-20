@@ -36,7 +36,7 @@ function CreateMergeRequestGitLab {
         [string] $mergeRequestTitle = "Bumping NuGet versions"
     )
 
-    Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId] from sourcebranch [$branchName] with prefix [$branchPrefix] to target branch [$targetBranch]"
+    Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId] from sourcebranch [$branchName] with prefix [$branchPrefix] to target branch [$targetBranch] using title [$mergeRequestTitle]"
 
     $gitDir = Get-Location
     # get gitlab functions
@@ -146,6 +146,7 @@ function Main {
         }
 
         $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
+        Write-Host "Using [$mergeRequestTitle] as the merge request title"
         HandleUpdates -mergeRequestTitle $mergeRequestTitle
     }
 }
