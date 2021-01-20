@@ -6,17 +6,14 @@ on:
       - main
       - test
 
-env:
-  container-tag: ghcr.io/rajbos/local-dependency-updates
+env:  
+  containertag: ghcr.io/rajbos/local-dependency-updates
 
 jobs:
   build-and-push-main:
 
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-
-    env:
-      container-tag: "{{container-tag}}:latest"
 
     steps:
     - uses: actions/checkout@v1
@@ -29,7 +26,7 @@ jobs:
         settingsPath: /src/PSSASettings.psd1
 
     - name: Run Snyk to check Docker image for vulnerabilities
-      if: ${{ true }}  # disable for now
+      if: ${{ false }}  # disable for now
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -37,15 +34,13 @@ jobs:
         image: Dockerfile
 
     - name: Build the Docker image
-      run: docker build -t {{container-tag}} .
+      run: docker build -t $containertag:${GITHUB_REF##*/} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push {{container-tag}}
-
-
+      run:  docker push $containertag:${GITHUB_REF##*/}
 
 
 
@@ -72,8 +67,9 @@ jobs:
       if: ${{ true }}  # disable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
-        image: "$containertag:${GITHUB_REF##*/}"
+        image: "$CONTAINER_TAG"
 
     - name: Build the Docker image
       run: docker build -t $containertag:${GITHUB_REF##*/} .
