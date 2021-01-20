@@ -99,7 +99,7 @@ function HandleUpdates {
 
 function GetMergeRequestTitle {
     param (
-        [string] $updateType
+        [string] $targetType
     )
 
     switch ($targetType) {
@@ -145,7 +145,7 @@ function Main {
             return
         }
 
-        $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
+        $mergeRequestTitle = GetMergeRequestTitle -targetType $targetType
         Write-Host "Using [$mergeRequestTitle] as the merge request title"
         HandleUpdates -mergeRequestTitle $mergeRequestTitle
     }
