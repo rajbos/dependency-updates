@@ -76,10 +76,10 @@ jobs:
         image: "{{container-tag}}"
 
     - name: Build the Docker image
-      run: docker build -t ${containertag} .
+      run: docker build -t {{ containertag }} .
 
     - name: Setup GitHub Container Registry
       run: echo "${{ secrets.GH_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push to GitHub Container Registry
-      run:  docker push ${containertag}
+      run:  docker push {{ containertag }}
