@@ -9,13 +9,14 @@ function ExecuteUpdates {
     yarn build
     Write-Host "yarn upgrade:"
     yarn upgrade
+    
+    # dont add npmrc to the history
+    git restore .npmrc
 
     # use git status to check if there are any changed files
     $status = git diff-index HEAD
+    Write-Host "Git status: " $status
     $updatesFound = ($status.Length -gt 0)
-
-    # dont add npmrc to the history
-    git restore .npmrc
 
     if ($updatesFound) {
         Write-Host "Found updates"       
