@@ -123,6 +123,7 @@ function CreateNewMergeRequest{
         source_branch = $sourceBranch
         target_branch = $targetBranch
         title = $title
+        remove_source_branch = $true
     }
 
     $body =  (ConvertTo-Json $bodyObject)

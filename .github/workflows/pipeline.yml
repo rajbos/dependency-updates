@@ -27,12 +27,19 @@ jobs:
         settingsPath: /src/PSSASettings.psd1
 
     - name: Run Snyk to check Docker image for vulnerabilities
-      if: ${{ false }}  # disable for now
+      if: ${{ true }}  # enable for now
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:      
         #todo: use env var if possible
+        image: ghcr.io/rajbos/local-dependency-updates
+        args: --file=Dockerfile
+
+    - name: Upload Snyk scan result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
         image: Dockerfile
 
     - name: Build the Docker image
@@ -66,12 +73,19 @@ jobs:
 
     - name: Run Snyk to check Docker image for vulnerabilities
       uses: snyk/actions/docker@master      
-      if: ${{ false }}  # disable for now
+      if: ${{ true }}  # enable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
         #todo: use env var if possible
+        image: ghcr.io/rajbos/local-dependency-updates
+        args: --file=Dockerfile
+
+    - name: Upload Snyk scan result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
         image: ghcr.io/rajbos/local-dependency-updates:test
 
     - name: Build the Docker image
