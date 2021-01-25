@@ -40,6 +40,7 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: snyk.sarif
+        image: Dockerfile
 
     - name: Build the Docker image
       run: docker build -t $containertag .
@@ -85,6 +86,7 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: snyk.sarif
+        image: ghcr.io/rajbos/local-dependency-updates:test
 
     - name: Build the Docker image
       run: docker build -t $containertag:${GITHUB_REF##*/} .

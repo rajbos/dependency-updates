@@ -99,14 +99,14 @@ function HandleUpdates {
 
 function GetMergeRequestTitle {
     param (
-        [string] $targetType
+        [string] $updateType
     )
 
-    switch ($targetType) {
+    switch ($updateType) {
         "yarn" { return "Bumping NPM package versions"; }
         "nuget" { return "Bumping NuGet packages versions"; }
         Default {
-            Write-Error "Please specify an targetType to execute on the repository. Supported: ""gitlab"""
+            Write-Error "Please specify an targetType to execute on the repository. Supported: ""yarn"", ""nuget"", got value [$updateType]"
         }
     }
 
@@ -145,7 +145,7 @@ function Main {
             return
         }
 
-        $mergeRequestTitle = GetMergeRequestTitle -targetType $targetType
+        $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
         Write-Host "Using [$mergeRequestTitle] as the merge request title"
         HandleUpdates -mergeRequestTitle $mergeRequestTitle
     }
