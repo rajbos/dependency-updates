@@ -1,4 +1,7 @@
 function ExecuteUpdates {
+    param (
+        [array] $specificPackages
+    )
    
     # check for updates with yarn:
     Write-Host "yarn:"
@@ -7,8 +10,17 @@ function ExecuteUpdates {
     yarn eslint
     Write-Host "yarn build:"
     yarn build
-    Write-Host "yarn upgrade:"
-    yarn upgrade
+
+    if ($null -eq $specificPackages) {
+        Write-Host "yarn upgrade all dependencies:"
+        yarn upgrade
+    }
+    else {
+        foreach ($package in $specificPackages) {
+            Write-Host "yarn upgrade for [$specificPackages]"
+            yarn upgrade $package --latest
+        }
+    }
     
     # dont add npmrc to the history
     git restore .npmrc
