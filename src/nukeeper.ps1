@@ -2,7 +2,9 @@ function ExecuteUpdates {
 
     Write-Host "Updating NuKeeper"
     # install nukeeper in this location
-    dotnet tool update nukeeper --tool-path $PSScriptRoot
+    dotnet tool update nukeeper --version 0.34 --tool-path $PSScriptRoot
+
+    Write-Host "NuKeeper version" $(nukeeper --version)
 
     Write-Host "Calling nukeeper"
     # get update info from NuKeeper
@@ -33,5 +35,8 @@ function ExecuteUpdates {
 }
 
 function UpdatePackages {
-    .$PSScriptRoot\nukeeper update
+    # call the nukeeper tool to update all projects
+    # -a is PackageAge where 0 == immediately
+    # -m is the maximum number of Packages to update (defaults to 1!)
+    .$PSScriptRoot\nukeeper update -a 0 -m 10000000
 }
