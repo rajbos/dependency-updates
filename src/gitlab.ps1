@@ -157,6 +157,11 @@ function SetupMergeWhenPipelineSucceeds {
         [string] $iid
     )
 
+    Write-Host "Setting 'merge when pipeline succeeds' for then merge request."
+    Write-Warning "Note: This will only work if the token we are using has Maintainer Rights on the project!"
+
+    Start-Sleep -Seconds 15
+
     $url = "projects/$projectId/merge_requests/$iid/merge"
     $bodyObject = @{
         merge_when_pipeline_succeeds = $true

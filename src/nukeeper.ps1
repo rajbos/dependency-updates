@@ -4,7 +4,7 @@ function ExecuteUpdates {
     # install nukeeper in this location
     dotnet tool update nukeeper --version 0.34 --tool-path $PSScriptRoot
 
-    Write-Host "NuKeeper version" $(.$PSScriptRoot\nukeeper --version)
+    Write-Host "NuKeeper version: " $(.$PSScriptRoot\nukeeper --version)[-1]
 
     Write-Host "Calling nukeeper"
     # get update info from NuKeeper
