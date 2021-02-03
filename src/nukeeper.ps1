@@ -5,12 +5,6 @@ function ExecuteUpdates {
     $version = 0.34
     dotnet tool update nukeeper --version $version --tool-path $PSScriptRoot
 
-    $availableNuKeeperVersion = $(Find-Package -Name NuKeeper -ProviderName NuGet -MinimumVersion 0.30).Version
-
-    if ($availableNuKeeperVersion -gt $version)  {
-        Write-Warning "There is a newer version available of NuKeeper: [$availableNuKeeperVersion]"
-    }
-
     Write-Host "Calling nukeeper"
     # get update info from NuKeeper
     $updates = .$PSScriptRoot\nukeeper inspect --outputformat csv
