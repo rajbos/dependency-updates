@@ -84,6 +84,25 @@ function PostToGitLab{
     }
 }
 
+function PutToGitLab{
+    param(
+        [string] $url,
+        [object] $body
+    )
+
+    $urlToCall = "$baseUrl/$url"
+    try {
+        
+        $response = Invoke-RestMethod -Uri $urlToCall -Headers @{"PRIVATE-TOKEN" = $accesToken} -Body $body -ContentType "application/json" -Method Put
+        return $response
+    }
+    catch {
+        Write-Error "Error posting to url [$urlToCall]"
+        Write-Error "$_"
+        throw
+    }
+}
+
 # returns the first matching project with the given searchName 
 function GetProjectByName{
     param(
@@ -132,6 +151,23 @@ function CreateNewMergeRequest{
     return $response
 }
 
+function SetupMergeWhenPipelineSucceeds {
+    param (
+        [string] $projectId,
+        [string] $iid
+    )
+
+    $url = "projects/$projectId/merge_requests/$iid/merge"
+    $bodyObject = @{
+        merge_when_pipeline_succeeds = $true
+    }
+
+    $body =  (ConvertTo-Json $bodyObject)
+
+    $response = PutToGitLab -url $url -Body $body
+    return $response
+}
+
 
 function CreateNewMergeRequestIfNoOpenOnes {
     param (
@@ -165,7 +201,12 @@ function CreateNewMergeRequestIfNoOpenOnes {
 
     $mr = CreateNewMergeRequest -projectId $projectId -sourceBranch $sourceBranch -targetBranch $targetBranch -title $title
     if ($mr) {
-        Write-Host "Created new Merge Request with url [$($mr.web_url)] and title [$title]"
+        Write-Host "Created new Merge Request with url [$($mr.web_url)] and title [$title] and iid [$($mr.iid)]"
+
+        # setup merge when pipeline succeeds
+        $updateResponse = (SetupMergeWhenPipelineSucceeds -projectId $projectId -iid $mr.iid)
+
+        Write-Host "Added merge when pipeline succeeds to the Merge Request. Result.merge_when_pipeline_succeeds [$($updateResponse.merge_when_pipeline_succeeds)]"
     }
 }
 
