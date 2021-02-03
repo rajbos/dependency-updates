@@ -2,9 +2,14 @@ function ExecuteUpdates {
 
     Write-Host "Updating NuKeeper"
     # install nukeeper in this location
-    dotnet tool update nukeeper --version 0.34 --tool-path $PSScriptRoot
+    $version = 0.34
+    dotnet tool update nukeeper --version $version --tool-path $PSScriptRoot
 
-    Write-Host "NuKeeper version: " $(.$PSScriptRoot\nukeeper --version)[-1]
+    $availableNuKeeperVersion = $(Find-Package -Name NuKeeper -ProviderName NuGet -MinimumVersion 0.30).Version
+
+    if ($availableNuKeeperVersion -gt $version)  {
+        Write-Warning "There is a newer version available of NuKeeper: [$availableNuKeeperVersion]"
+    }
 
     Write-Host "Calling nukeeper"
     # get update info from NuKeeper

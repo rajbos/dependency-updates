@@ -28,7 +28,7 @@ jobs:
 
     - name: Run Snyk to check Docker image for vulnerabilities
       if: ${{ true }}  # enable for now
-      uses: rajbos-actions/snyk/docker@master
+      uses: rajbos-actions/snyk-actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:      
@@ -66,13 +66,13 @@ jobs:
 
     - name: PS Lint
       if: ${{ true }}  # enable for now
-      uses: devblackops/github-action-psscriptanalyzer@master
+      uses: rajbos-actions/github-action-psscriptanalyzer@master
       with:
         failOnWarnings: false
         settingsPath: /src/PSSASettings.psd1
 
     - name: Run Snyk to check Docker image for vulnerabilities
-      uses: snyk/actions/docker@master      
+      uses: rajbos-actions/snyk-actions/docker@master      
       if: ${{ true }}  # enable for now
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
