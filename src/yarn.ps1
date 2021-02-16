@@ -17,7 +17,7 @@ function ExecuteUpdates {
     }
     else {
         foreach ($package in $specificPackages) {
-            Write-Host "yarn upgrade for [$specificPackages]"
+            Write-Host "Running yarn upgrade for [$specificPackages]"
             yarn upgrade $package --latest
         }
     }
@@ -31,7 +31,7 @@ function ExecuteUpdates {
     $updatesFound = ($status.Length -gt 0)
 
     if ($updatesFound) {
-        Write-Host "Found updates"       
+        Write-Host "Found updates"
     }
     else {
         Write-Host "Found no updates"

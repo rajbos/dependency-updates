@@ -1,6 +1,7 @@
 param (
     [string] $updateType,
-    [string] $targetType
+    [string] $targetType,
+    [array] $specificPackages
 )
 
 function ExtractParametersFromGitLabEnvironmentVariables {
@@ -55,6 +56,10 @@ function CreateMergeRequestGitLab {
 }
 
 function Get-UpdatesAvailable {
+    param (
+        [array] $specificPackages
+    )
+
     $updatesAvailable = $false
     switch ($updateType) {
         "nuget" {
@@ -69,7 +74,13 @@ function Get-UpdatesAvailable {
             Write-Host "Running yarn updates"
             . $PSScriptRoot\yarn.ps1
 
-            $updatesAvailable = (ExecuteUpdates)[-1]
+            
+            if ($null -ne $specificPackages) {
+                Write-Host "Checking only these packages: [$specificPackages]"
+            }
+
+            $result = ExecuteUpdates -specificPackages $specificPackages
+            $updatesAvailable = $result[-1]
         }
         Default {
             Write-Error "Please specify an updateType to execute on the repository. Supported: [""nuget"", ""yarn""]"
@@ -133,7 +144,7 @@ function Main {
     SetupGit 
 
     # run the selected check to see if there are any updates
-    $updatesAvailable = Get-UpdatesAvailable
+    $updatesAvailable = Get-UpdatesAvailable -specificPackages $specificPackages
 
     # handle any updates with the selected target type
     if ($updatesAvailable) {
