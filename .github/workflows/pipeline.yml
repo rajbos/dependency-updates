@@ -44,6 +44,7 @@ jobs:
         #todo: use env var if possible
         image: ghcr.io/rajbos/local-dependency-updates
         args: --file=Dockerfile
+      continue-on-error: true
 
     - name: Upload Snyk scan result to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v1

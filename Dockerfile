@@ -94,6 +94,9 @@ RUN addgroup -g 1000 node \
 
 ENV YARN_VERSION 1.22.10
 
+# breaks
+#RUN apk add musl=1.2.2
+
 RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && for key in \
     6A010C5166006599AA17F08146C2130DFD2497F5 \
@@ -113,6 +116,8 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && apk del .build-deps-yarn \
   # smoke test
   && yarn --version
+
+RUN apk info -a musl
 
 COPY /src/*.ps1 /
 COPY /src/*.ps1 /dependency-updates/
