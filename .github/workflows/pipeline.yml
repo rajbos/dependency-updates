@@ -26,6 +26,15 @@ jobs:
         failOnWarnings: false
         settingsPath: /src/PSSASettings.psd1
 
+    - name: Build the Docker image
+      run: docker build -t $containertag .
+
+    - name: Setup GitHub Container Registry
+      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
+
+    - name: Push to GitHub Container Registry
+      run:  docker push $containertag
+
     - name: Run Snyk to check Docker image for vulnerabilities
       if: ${{ true }}  # enable for now
       uses: rajbos-actions/snyk-actions/docker@master
@@ -42,14 +51,7 @@ jobs:
         sarif_file: snyk.sarif
         image: Dockerfile
 
-    - name: Build the Docker image
-      run: docker build -t $containertag .
-
-    - name: Setup GitHub Container Registry
-      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
-
-    - name: Push to GitHub Container Registry
-      run:  docker push $containertag
+    
     
     - name: Cleanup GitHub Container Registry login data
       run: docker logout $containerhost
