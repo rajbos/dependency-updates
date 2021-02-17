@@ -9,7 +9,7 @@ RUN echo "Installing PowerShell" && \
 
 # get .NET core 3.1 for the NuKeeper dependencies
 RUN echo "Installing dotnetcore 3.1:" && \
-    dotnet_version=3.1.10 && \
+    dotnet_version=3.1.12 && \
     wget -O dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Runtime/$dotnet_version/dotnet-runtime-$dotnet_version-linux-musl-x64.tar.gz && \
     dotnet_sha512='ee54d74e2a43f4d8ace9b1c76c215806d7580d52523b80cf4373c132e2a3e746b6561756211177bc1bdbc92344ee30e928ac5827d82bf27384972e96c72069f8' && \
     echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - && \
