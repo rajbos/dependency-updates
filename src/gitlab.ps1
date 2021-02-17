@@ -207,11 +207,11 @@ function CreateNewMergeRequestIfNoOpenOnes {
     $mr = CreateNewMergeRequest -projectId $projectId -sourceBranch $sourceBranch -targetBranch $targetBranch -title $title
     if ($mr) {
         Write-Host "Created new Merge Request with url $($mr.web_url) and title [$title] and iid [$($mr.iid)]"
-
-        # setup merge when pipeline succeeds
-        $updateResponse = (SetupMergeWhenPipelineSucceeds -projectId $projectId -iid $mr.iid)
-
-        Write-Host "Added merge when pipeline succeeds to the Merge Request. Result.merge_when_pipeline_succeeds [$($updateResponse.merge_when_pipeline_succeeds)]"
+        if ($mergeWhenPipelineSucceeds) {
+            # setup merge when pipeline succeeds
+            $updateResponse = (SetupMergeWhenPipelineSucceeds -projectId $projectId -iid $mr.iid)
+            Write-Host "Added merge when pipeline succeeds to the Merge Request. Result.merge_when_pipeline_succeeds [$($updateResponse.merge_when_pipeline_succeeds)]"
+        }
     }
 }
 

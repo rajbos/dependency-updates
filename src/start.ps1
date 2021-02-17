@@ -1,6 +1,8 @@
 param (
     [string] $updateType,
-    [string] $targetType,
+    [string] $targetType,    
+    [string] $mergeRequestTitle = "",
+    [bool] $mergeWhenPipelineSucceeds = $true,
     [array] $specificPackages
 )
 
@@ -34,7 +36,8 @@ function CreateMergeRequestGitLab {
         [string] $branchName,
         [string] $branchPrefix,        
         [string] $targetBranch = "main",
-        [string] $mergeRequestTitle = "Bumping NuGet versions"
+        [string] $mergeRequestTitle = "Bumping NuGet versions",
+        [boolean] $mergeWhenPipelineSucceeds
     )
 
     Write-Host "Creating new GitLab merge request for project with Id [$gitLabProjectId] from sourcebranch [$branchName] with prefix [$branchPrefix] to target branch [$targetBranch] using title [$mergeRequestTitle]"
@@ -52,7 +55,8 @@ function CreateMergeRequestGitLab {
                                       -sourceBranchPrefix $sourceBranchPrefix `
                                       -sourceBranch $sourceBranch `
                                       -targetBranch $targetBranch `
-                                      -title $mergeRequestTitle
+                                      -title $mergeRequestTitle `
+                                      -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds
 }
 
 function Get-UpdatesAvailable {
@@ -92,7 +96,8 @@ function Get-UpdatesAvailable {
 
 function HandleUpdates {
     param (
-        [string] $mergeRequestTitle
+        [string] $mergeRequestTitle,
+        [boolean] $mergeWhenPipelineSucceeds
     )
     switch ($targetType) {
         "gitlab" {  
@@ -100,7 +105,7 @@ function HandleUpdates {
             if ($null -eq $env:gitLabProjectId) {
                 Write-Error "Please specify [$$env:gitLabProjectId] with a projectId to use. This number can be found on the project page"
             }
-            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId -mergeRequestTitle $mergeRequestTitle
+            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds
         }
         Default {
             Write-Error "Please specify a targetTpe to target. Supported: ""gitlab"""
@@ -156,9 +161,12 @@ function Main {
             return
         }
 
-        $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
+        if ($mergeRequestTitle.Length -eq 0) {
+            # load from updateType
+            $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
+        }
         Write-Host "Using [$mergeRequestTitle] as the merge request title"
-        HandleUpdates -mergeRequestTitle $mergeRequestTitle
+        HandleUpdates -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds
     }
 }
 
