@@ -20,7 +20,7 @@ RUN echo "Installing dotnetcore 3.1:" && \
     rm dotnet.tar.gz
 
 # Include node setup in the image as well
-ENV NODE_VERSION 10.23.1
+ENV NODE_VERSION 10.23.3
 
 RUN addgroup -g 1000 node \
     && adduser -u 1000 -G node -s /bin/sh -D node \
@@ -32,7 +32,7 @@ RUN addgroup -g 1000 node \
       && case "${alpineArch##*-}" in \
         x86_64) \
           ARCH='x64' \
-          CHECKSUM="a1a0fb3b20b495d806556caaf66c828b4e9b0f01ea004a8432a0c42cbbe5481b" \
+          CHECKSUM="0f7cfb9c2b3f2f53d307756a6f824013b5c5f1cba503f55e3ecbc1653786e7b9" \
           ;; \
         *) ;; \
       esac \
