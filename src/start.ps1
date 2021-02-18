@@ -34,7 +34,7 @@ function CreateMergeRequestGitLab {
         [Parameter(Mandatory=$true)]
         [string] $gitLabProjectId,
         [string] $branchName,
-        [string] $branchPrefix,        
+        [string] $branchPrefix,
         [string] $targetBranch = "main",
         [string] $mergeRequestTitle = "Bumping NuGet versions",
         [boolean] $mergeWhenPipelineSucceeds
@@ -169,7 +169,6 @@ function Main {
         HandleUpdates -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds
     }
 }
-
 
 # call the main execution code
 Main
