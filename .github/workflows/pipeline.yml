@@ -35,6 +35,9 @@ jobs:
     - name: Push to GitHub Container Registry
       run:  docker push $containertag
 
+    - name: Cleanup GitHub Container Registry login data
+      run: docker logout $containerhost
+
     - name: Run Snyk to check Docker image for vulnerabilities
       if: ${{ true }}  # enable for now
       uses: rajbos-actions/snyk-actions/docker@master
@@ -49,12 +52,6 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: snyk.sarif
-
-    
-    
-    - name: Cleanup GitHub Container Registry login data
-      run: docker logout $containerhost
-
 
 
   build-and-push-branch:
@@ -72,6 +69,18 @@ jobs:
         failOnWarnings: false
         settingsPath: /src/PSSASettings.psd1
 
+    - name: Build the Docker image
+      run: docker build -t $containertag:${GITHUB_REF##*/} .
+
+    - name: Setup GitHub Container Registry
+      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
+
+    - name: Push to GitHub Container Registry
+      run:  docker push $containertag:${GITHUB_REF##*/}
+
+    - name: Cleanup GitHub Container Registry login data
+      run: docker logout $containerhost
+
     - name: Run Snyk to check Docker image for vulnerabilities
       uses: rajbos-actions/snyk-actions/docker@master      
       if: ${{ true }}  # enable for now
@@ -87,15 +96,3 @@ jobs:
       with:
         sarif_file: snyk.sarif
         image: ghcr.io/rajbos/local-dependency-updates:test
-
-    - name: Build the Docker image
-      run: docker build -t $containertag:${GITHUB_REF##*/} .
-
-    - name: Setup GitHub Container Registry
-      run: echo "${{ secrets.GH_PAT }}" | docker login $containerhost -u ${{ github.actor }} --password-stdin
-
-    - name: Push to GitHub Container Registry
-      run:  docker push $containertag:${GITHUB_REF##*/}
-
-    - name: Cleanup GitHub Container Registry login data
-      run: docker logout $containerhost
