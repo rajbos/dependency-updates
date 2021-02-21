@@ -41,8 +41,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:      
-        #todo: use env var if possible
-        image: ghcr.io/rajbos/local-dependency-updates
+        image: ${{ env.containertag }}
         args: --file=Dockerfile
       continue-on-error: true
 
@@ -80,8 +79,7 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         CONTAINER_TAG: $containertag:${GITHUB_REF##*/}
       with:
-        #todo: use env var if possible
-        image: ghcr.io/rajbos/local-dependency-updates
+        image: ${{ env.containertag }}
         args: --file=Dockerfile
 
     - name: Upload Snyk scan result to GitHub Code Scanning
