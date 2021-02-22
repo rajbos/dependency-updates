@@ -97,7 +97,8 @@ function Get-UpdatesAvailable {
 function HandleUpdates {
     param (
         [string] $mergeRequestTitle,
-        [boolean] $mergeWhenPipelineSucceeds
+        [boolean] $mergeWhenPipelineSucceeds,
+        [string] $targetBranch
     )
     switch ($targetType) {
         "gitlab" {  
@@ -105,7 +106,7 @@ function HandleUpdates {
             if ($null -eq $env:gitLabProjectId) {
                 Write-Error "Please specify [$$env:gitLabProjectId] with a projectId to use. This number can be found on the project page"
             }
-            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds
+            CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds -targetBranch $targetBranch
         }
         Default {
             Write-Error "Please specify a targetTpe to target. Supported: ""gitlab"""
@@ -146,7 +147,7 @@ function Main {
     Set-Location $PSScriptRoot
     . .\git.ps1 -PAT $env:PAT -RemoteUrl $env:remoteUrl -gitUserEmail $env:gitUserEmail -gitUserName $env:gitUserName -branchPrefix $env:branchPrefix
     # clone the repo
-    SetupGit 
+    $targetBranch = SetupGit 
 
     # run the selected check to see if there are any updates
     $updatesAvailable = Get-UpdatesAvailable -specificPackages $specificPackages
@@ -165,8 +166,8 @@ function Main {
             # load from updateType
             $mergeRequestTitle = GetMergeRequestTitle -updateType $updateType
         }
-        Write-Host "Using [$mergeRequestTitle] as the merge request title"
-        HandleUpdates -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds
+        Write-Host "Using [$mergeRequestTitle] as the merge request title for target branch [$targetBranch]"
+        HandleUpdates -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds -targetBranch $targetBranch
     }
 }
 

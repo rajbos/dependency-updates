@@ -7,6 +7,17 @@ param (
   [string] $RemoteUrl
 )
 
+function GetCurrentBranch {
+    $branches = (git branch)
+
+    foreach ($branch in $branches) {
+        if ($branch.StartsWith("*")) {
+            # current branch
+            return $branch.Replace("* ", "").Replace("  remotes/origin/", "")
+        }
+    }
+}
+
 function CheckBranchNotExists{
     param (
         [string] $newBranchName
@@ -113,10 +124,13 @@ function SetupGit {
     git config user.email $gitUserEmail
     git config user.name $gitUserName
 
-    # todo: log branch we are in and add a setting for it
+    $targetBranch = GetCurrentBranch
+
     $branchName = GetNewBranchName
     if ($false -eq (CheckBranchNotExists -newBranchName $branchName)) {
         Write-Host "Target branch with name [$branchName] already exists, will use it"
         git checkout $branchName
     }
+
+    return $targetBranch
 }
