@@ -109,7 +109,7 @@ function HandleUpdates {
             CreateMergeRequestGitLab -branchName "$branchName" -branchPrefix $branchPrefix -gitLabProjectId $env:gitLabProjectId -mergeRequestTitle $mergeRequestTitle -mergeWhenPipelineSucceeds $mergeWhenPipelineSucceeds -targetBranch $targetBranch
         }
         Default {
-            Write-Error "Please specify a targetTpe to target. Supported: ""gitlab"""
+            Write-Error "Please specify a targetType to target. Supported: ""gitlab"""
         }
     }
 }
