@@ -147,7 +147,7 @@ function Main {
     Set-Location $PSScriptRoot
     . .\git.ps1 -PAT $env:PAT -RemoteUrl $env:remoteUrl -gitUserEmail $env:gitUserEmail -gitUserName $env:gitUserName -branchPrefix $env:branchPrefix
     # clone the repo
-    $targetBranch = SetupGit 
+    $targetBranch = SetupGit[-1] 
 
     # run the selected check to see if there are any updates
     $updatesAvailable = Get-UpdatesAvailable -specificPackages $specificPackages
