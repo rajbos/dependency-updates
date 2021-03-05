@@ -20,7 +20,7 @@ function ExecuteUpdates {
             }
             else {
                 Write-Host "There are updates"
-                $updatesFound = $true                
+                $updatesFound = $true
             }
             break
         }

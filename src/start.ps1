@@ -71,7 +71,8 @@ function Get-UpdatesAvailable {
             Write-Host "Running nuget updates"
             . $PSScriptRoot\nukeeper.ps1
 
-            $updatesAvailable = ExecuteUpdates
+            $updatesAvailable = (ExecuteUpdates)[-1]
+            Write-Host "UpdatesAvailable result from NuGet = [$updatesAvailable]" 
         }
         "yarn" {
             # run yarn updates on repo
