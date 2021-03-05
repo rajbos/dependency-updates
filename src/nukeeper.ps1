@@ -15,14 +15,14 @@ function ExecuteUpdates {
     foreach ($row in $updates) {
         if ($row.IndexOf("possible updates") -gt -1) {
             Write-Host "Found updates row [$row]"; 
-            if ($row.IndexOf("There are 0 possible updates") -gt -1) {
+            if ($row.IndexOf("Found 0 possible updates") -gt -1) {
                 Write-Host "There are no updates"
             }
             else {
                 Write-Host "There are updates"
-                $updatesFound = $true
-                break
+                $updatesFound = $true                
             }
+            break
         }
     }   
 
