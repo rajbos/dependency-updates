@@ -37,5 +37,9 @@ function UpdatePackages {
     # call the nukeeper tool to update all projects
     # -a is PackageAge where 0 == immediately
     # -m is the maximum number of Packages to update (defaults to 1!)
-    .$PSScriptRoot\nukeeper update -a 0 -m 10000000
+    .$PSScriptRoot\nukeeper update -a 0 -m 10000000 2>&1
+    if ($? -ne $true) {
+        Write-Error "Error running nukeeper update"
+        throw
+    }
 }
