@@ -3,7 +3,8 @@ param (
     [string] $targetType,    
     [string] $mergeRequestTitle = "",
     [bool] $mergeWhenPipelineSucceeds = $true,
-    [array] $specificPackages
+    [array] $specificPackages,
+    [string] $updateFolder
 )
 
 function ExtractParametersFromGitLabEnvironmentVariables {
@@ -18,6 +19,10 @@ function ExtractParametersFromGitLabEnvironmentVariables {
     Write-Host " - gitLabProjectId: [$($env:gitLabProjectId)]"
     Write-Host " - gitUserEmail: [$($env:gitUserEmail)]"
     Write-Host " - gitUserName: [$($env:gitUserName)]"
+
+    if ($null -ne $updateFolder) {
+        Write-Host "Update commands will run from this folder: [$updateFolder]"
+    }
 }
 
 function HandleUpdatesWithGit {
@@ -61,10 +66,14 @@ function CreateMergeRequestGitLab {
 
 function Get-UpdatesAvailable {
     param (
+        [string] $updateFolder,
         [array] $specificPackages
     )
 
     $updatesAvailable = $false
+    if ($null -ne $updateFolder) {
+        Set-Location $updateFolder
+    }
     switch ($updateType) {
         "nuget" {
             # run nukeeper updates on repo
@@ -143,7 +152,6 @@ function Main {
         }
     }
 
-
     # import git functions
     Set-Location $PSScriptRoot
     . .\git.ps1 -PAT $env:PAT -RemoteUrl $env:remoteUrl -gitUserEmail $env:gitUserEmail -gitUserName $env:gitUserName -branchPrefix $env:branchPrefix
@@ -152,7 +160,7 @@ function Main {
     $targetBranch = $results[-1] 
 
     # run the selected check to see if there are any updates
-    $updatesAvailable = Get-UpdatesAvailable -specificPackages $specificPackages
+    $updatesAvailable = Get-UpdatesAvailable -updateFolder $updateFolder -specificPackages $specificPackages
 
     # handle any updates with the selected target type
     if ($updatesAvailable) {
