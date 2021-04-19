@@ -150,6 +150,23 @@ function GetMergeRequestTitle {
 
 }
 
+function Check-NPMrc {
+    param (
+        [string] $updateFolder
+    )
+
+    # test for .npmrc file in the root, if available, copy it to updateFolder
+    if ($true -eq (Test-Path "$PSScriptRoot/.npmrc" -PathType Leaf)) {
+        Write-Host "Found .npmrc file in script root"
+        if ($true -eq (Test-Path $updateFolder -PathType Container)) {
+            # copy the npmrc file over
+            Copy-Item "$PSScriptRoot/.npmrc" "$updateFolder/.npmrc"
+            Write-Host "Copied .npmrc from scriptroot to [$updateFolder]"
+        }
+    }
+
+}
+
 function Main {
     # main execution code
     Write-Host "updateType = [$updateType], targetType=[$targetType]"
@@ -169,6 +186,8 @@ function Main {
     # clone the repo
     $results = SetupGit
     $targetBranch = $results[-1] 
+
+    Check-NPMrc -updateFolder $updateFolder
 
     # run the selected check to see if there are any updates
     $updatesAvailable = Get-UpdatesAvailable -updateFolder $updateFolder -specificPackages $specificPackages
