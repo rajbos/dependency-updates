@@ -156,12 +156,12 @@ function Check-NPMrc {
     )
 
     # test for .npmrc file in the root, if available, copy it to updateFolder
-    if ($true -eq (Test-Path "$PSScriptRoot/.npmrc" -PathType Leaf)) {
+    if ($true -eq (Test-Path ".npmrc" -PathType Leaf)) {
         Write-Host "Found .npmrc file in script root"
         if ($true -eq (Test-Path $updateFolder -PathType Container)) {
             # copy the npmrc file over
-            Copy-Item "$PSScriptRoot/.npmrc" "$updateFolder/.npmrc"
-            Write-Host "Copied .npmrc from scriptroot to [$updateFolder]"
+            Copy-Item ".npmrc" "$updateFolder/.npmrc"
+            Write-Host "Copied .npmrc from [$(Get-Location)] to [$updateFolder]"
         }
     }
 
