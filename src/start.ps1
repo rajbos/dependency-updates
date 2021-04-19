@@ -87,7 +87,18 @@ function Get-UpdatesAvailable {
             # run yarn updates on repo
             Write-Host "Running yarn updates"
             . $PSScriptRoot\yarn.ps1
+            
+            if ($null -ne $specificPackages) {
+                Write-Host "Checking only these packages: [$specificPackages]"
+            }
 
+            $result = ExecuteUpdates -specificPackages $specificPackages
+            $updatesAvailable = $result[-1]
+        }
+        "npm" {
+            # run npm updates on repo
+            Write-Host "Running npm updates"
+            . $PSScriptRoot\npm.ps1
             
             if ($null -ne $specificPackages) {
                 Write-Host "Checking only these packages: [$specificPackages]"
@@ -97,7 +108,7 @@ function Get-UpdatesAvailable {
             $updatesAvailable = $result[-1]
         }
         Default {
-            Write-Error "Please specify an updateType to execute on the repository. Supported: [""nuget"", ""yarn""]"
+            Write-Error "Please specify an updateType to execute on the repository. Supported: [""nuget"", ""yarn"", ""npm""]"
         }
     }
 
