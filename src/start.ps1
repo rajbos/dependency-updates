@@ -154,13 +154,7 @@ function Check-NPMrc {
     param (
         [string] $updateFolder
     )
-    Write-Host "Checking this folder [$(Get-Location)] for an .npmrc file"
-    Get-ChildItem | ForEach-Object {Write-Host $_.Name}
     $startLocation=Get-Location
-    Set-Location $PSScriptRoot
-
-    Write-Host "Checking this folder [$(Get-Location)] for an .npmrc file"
-    Get-ChildItem | ForEach-Object {Write-Host $_.Name}
 
     # test for .npmrc file in the root, if available, copy it to updateFolder
     if ($true -eq (Test-Path ".npmrc" -PathType Leaf)) {
@@ -168,7 +162,7 @@ function Check-NPMrc {
         if ($true -eq (Test-Path ".\src\$updateFolder" -PathType Container)) {
             # copy the npmrc file over
             Copy-Item ".npmrc" ".\src\$updateFolder\.npmrc"
-            Write-Host "Copied .npmrc from [$(Get-Location)] to [$updateFolder]"
+            Write-Host "Copied .npmrc from [$(Get-Location)] to [.\src\$updateFolder]"
         }
     }
 
