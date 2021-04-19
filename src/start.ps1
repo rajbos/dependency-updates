@@ -154,6 +154,8 @@ function Check-NPMrc {
     param (
         [string] $updateFolder
     )
+    Write-Host "Checking this folder [$(Get-Location)] for an .npmrc file"
+    Get-ChildItem | ForEach-Object {Write-Host $_.Name}
 
     # test for .npmrc file in the root, if available, copy it to updateFolder
     if ($true -eq (Test-Path ".npmrc" -PathType Leaf)) {
