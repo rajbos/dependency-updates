@@ -96,7 +96,7 @@ function SetupGit {
     
     if (Test-Path -Path "src" -PathType Container) {
         Write-Host "Clearing src folder before cloning"
-        Remove-Item "src" -Recurse - Force
+        Remove-Item "src" -Recurse -Force
     }
     $repoName="src" 
     # create the (new) the folder and move into it
