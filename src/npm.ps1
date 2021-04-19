@@ -20,7 +20,7 @@ function ExecuteUpdates {
         }
     }
     
-    # dont add npmrc to the history
+    # don't add npmrc to the history
     git restore .npmrc
 
     # use git status to check if there are any changed files
