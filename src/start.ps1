@@ -167,7 +167,7 @@ function Check-NPMrc {
         Write-Host "Found .npmrc file in script root"
         if ($true -eq (Test-Path ".\src\$updateFolder" -PathType Container)) {
             # copy the npmrc file over
-            Copy-Item ".npmrc" "$updateFolder/.npmrc"
+            Copy-Item ".npmrc" ".\src\$updateFolder\.npmrc"
             Write-Host "Copied .npmrc from [$(Get-Location)] to [$updateFolder]"
         }
     }
