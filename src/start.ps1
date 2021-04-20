@@ -155,6 +155,7 @@ function Check-NPMrc {
         [string] $updateFolder
     )
     $startLocation=Get-Location
+    Set-Location $PSScriptRoot
 
     # test for .npmrc file in the root, if available, copy it to updateFolder
     if ($true -eq (Test-Path ".npmrc" -PathType Leaf)) {
