@@ -142,6 +142,7 @@ function GetMergeRequestTitle {
 
     switch ($updateType) {
         "yarn" { return "Bumping NPM package versions"; }
+        "npm" { return "Bumping NPM package versions"; }
         "nuget" { return "Bumping NuGet packages versions"; }
         Default {
             Write-Error "Please specify an targetType to execute on the repository. Supported: ""yarn"", ""nuget"", got value [$updateType]"
