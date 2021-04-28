@@ -85,7 +85,7 @@ function Get-UpdatesAvailable {
         }
         "yarn" {
             # run yarn updates on repo
-            Write-Host "Running yarn updates"
+            Write-Host "Running yarn updates from $(Get-Location)"
             . $PSScriptRoot\yarn.ps1
             
             if ($null -ne $specificPackages) {
