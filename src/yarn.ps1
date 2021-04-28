@@ -4,11 +4,11 @@ function ExecuteUpdates {
     )
    
     # check for updates with yarn:
-    Write-Host "yarn:"
+    Write-Host "Running yarn"
     yarn
-    Write-Host "yarn eslint:"
+    Write-Host "Running yarn eslint"
     yarn eslint
-    Write-Host "yarn build:"
+    Write-Host "Running yarn build"
     yarn build
 
     if ($null -eq $specificPackages) {

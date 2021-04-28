@@ -4,9 +4,9 @@ function ExecuteUpdates {
     )
    
     # check for updates with yarn:
-    Write-Host "npm:"
+    Write-Host "Running npm"
     npm
-    Write-Host "npm ci:"
+    Write-Host "Running npm ci"
     npm ci
 
     if ($null -eq $specificPackages) {
