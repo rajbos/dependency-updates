@@ -72,8 +72,10 @@ function Get-UpdatesAvailable {
 
     $updatesAvailable = $false
     if ($null -ne $updateFolder) {
+        Write-Host "Moving to update folder [$($updateFolder)]"
         Set-Location $updateFolder
     }
+    
     switch ($updateType) {
         "nuget" {
             # run nukeeper updates on repo
