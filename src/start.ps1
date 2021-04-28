@@ -71,11 +71,12 @@ function Get-UpdatesAvailable {
     )
 
     $updatesAvailable = $false
-    if ($null -ne $updateFolder) {
+    if ($null -ne $updateFolder -and $updateFolder.Length -gt 0) {
         Write-Host "Moving to update folder [$($updateFolder)]"
         Set-Location $updateFolder
     }
-    
+
+    Write-Host "Running updates from this folder [$(Get-Location)]"
     switch ($updateType) {
         "nuget" {
             # run nukeeper updates on repo
@@ -87,7 +88,7 @@ function Get-UpdatesAvailable {
         }
         "yarn" {
             # run yarn updates on repo
-            Write-Host "Running yarn updates from $(Get-Location)"
+            Write-Host "Running yarn updates"
             . $PSScriptRoot\yarn.ps1
             
             if ($null -ne $specificPackages) {
