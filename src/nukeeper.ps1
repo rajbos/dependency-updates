@@ -44,6 +44,8 @@ function UpdatePackages {
         .$PSScriptRoot\nukeeper update -a 0 -m 10000 
         if ($? -ne $true) {
           Write-Error "Error running nukeeper update"
+          Write-Error "This probably an error with NuKeeper and downgraded packages."
+          Write-Error "Please run 'nukeeper update -a 0 -m 10000' from the project/solution root"
           throw
         }
     }
