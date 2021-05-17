@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - test
+      - NET3.1
 
 env:  
   containertag: ghcr.io/rajbos/local-dependency-updates
