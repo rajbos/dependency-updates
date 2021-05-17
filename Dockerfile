@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine
 
+RUN apk add curl
+
 RUN echo "Installing PowerShell" && \
     curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
     mkdir -p /opt/microsoft/powershell/7 && \
