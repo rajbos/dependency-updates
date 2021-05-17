@@ -3,7 +3,7 @@ name: Build and Push Docker container
 on: 
   push:
     branches:
-      - *
+      - **
 
 env:  
   containertag: ghcr.io/rajbos/local-dependency-updates
