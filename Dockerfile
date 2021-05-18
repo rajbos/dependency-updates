@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine
 
-RUN apk add curl
+RUN apk add curl \
+  && apk add git
 
 RUN echo "Installing PowerShell" && \
     curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
@@ -111,5 +112,9 @@ RUN apk info -a musl
 
 COPY /src/*.ps1 /
 COPY /src/*.ps1 /dependency-updates/
+
+RUN pwsh -Command "dotnet tool install nukeeper --tool-path /dependency-updates/"
+RUN cd /dependency-updates \
+ && ./nukeeper --version
 
 CMD [ "pwsh" ] 
