@@ -84,6 +84,7 @@ function Get-UpdatesAvailable {
             . $PSScriptRoot\nukeeper.ps1
 
             $updatesAvailable = (ExecuteUpdates)[-1]
+            
             Write-Host "UpdatesAvailable result from NuGet = [$updatesAvailable]" 
         }
         "yarn" {
