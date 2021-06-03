@@ -4,7 +4,7 @@ RUN apk update \
   && apk upgrade \
   && apk add curl=7.77.0-r0
 
-RUN apk add git=2.31.1
+RUN apk add git=2.30.2-r0
 
 RUN echo "Installing PowerShell" && \
     curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
