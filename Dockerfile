@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine
 
 RUN apk update \
-  && apk add curl \
+  && apk add curl=7.77.0 \
   && apk add git
 
 RUN echo "Installing PowerShell" && \
