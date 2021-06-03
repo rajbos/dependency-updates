@@ -114,6 +114,8 @@ COPY /src/*.ps1 /
 COPY /src/*.ps1 /dependency-updates/
 
 RUN pwsh -Command "dotnet tool install nukeeper --tool-path /dependency-updates/"
+RUN pwsh -Command "dotnet tool update dotnet-outdated-tool --tool-path /dependency-updates/"
+
 RUN cd /dependency-updates \
  && ./nukeeper --version
 

@@ -4,6 +4,12 @@ function ExecuteUpdates {
     $env:PATH="$($env:PATH):/root/.dotnet/tools:/dependency-updates/"
     #Write-Host $env:PATH
 
+    $buildResult = dotnet build
+    if (!$?) {
+        Write-Host "Build result was not succesful:"
+        Write-Host $buildResult
+    }
+
     Write-Host "Calling nukeeper inspect"
     # get update info from NuKeeper
     #$updates = .$PSScriptRoot\nukeeper inspect --outputformat csv

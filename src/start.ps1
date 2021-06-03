@@ -78,10 +78,19 @@ function Get-UpdatesAvailable {
 
     Write-Host "Running updates from this folder [$(Get-Location)]"
     switch ($updateType) {
-        "nuget" {
+        "nukeeper" {
             # run nukeeper updates on repo
-            Write-Host "Running nuget updates"
+            Write-Host "Running nuget updates with nukeeper"
             . $PSScriptRoot\nukeeper.ps1
+
+            $updatesAvailable = (ExecuteUpdates)[-1]
+            
+            Write-Host "UpdatesAvailable result from NuGet = [$updatesAvailable]" 
+        }
+        "nuget" {
+            # run dotnet outdated updates on repo
+            Write-Host "Running nuget updates"
+            . $PSScriptRoot\dotnet-outdated.ps1
 
             $updatesAvailable = (ExecuteUpdates)[-1]
             
@@ -148,6 +157,7 @@ function GetMergeRequestTitle {
         "yarn" { return "Bumping NPM package versions"; }
         "npm" { return "Bumping NPM package versions"; }
         "nuget" { return "Bumping NuGet packages versions"; }
+        "nukeeper" { return "Bumping NuGet packages versions"; }
         Default {
             Write-Error "Please specify an targetType to execute on the repository. Supported: ""yarn"", ""nuget"", got value [$updateType]"
         }
