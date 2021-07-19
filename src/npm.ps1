@@ -22,6 +22,9 @@ function ExecuteUpdates {
     
     # don't add npmrc to the history
     git restore .npmrc
+    
+    # trigger git update after removing the file, to prevent issues
+    git status
 
     # use git status to check if there are any changed files
     $status = git diff-index HEAD
