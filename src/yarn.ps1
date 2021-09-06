@@ -10,7 +10,11 @@ function ExecuteUpdates {
 
     # checking all files
     Write-Host "Local files: "
-    foreach ($item in get-childitem) { Write-Host "- $($item.name)" }   
+    foreach ($item in Get-ChildItem -Hidden) { Write-Host "- $($item.name)" } 
+
+    $text = Get-Content .npmrc
+    Write-Host "NPMRC contents:"
+    Write-Host $text
    
     # check for updates with yarn:
     Write-Host "Running command [yarn]"
