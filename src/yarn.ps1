@@ -2,6 +2,13 @@ function ExecuteUpdates {
     param (
         [array] $specificPackages
     )
+
+    # adding debug info for finding config errors:
+    npm config list
+
+    # checking all files
+    Write-Host "Local files: "
+    foreach ($item in get-childitem) { Write-Host "- $($item.name)" }   
    
     # check for updates with yarn:
     Write-Host "Running yarn"

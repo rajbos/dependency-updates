@@ -94,16 +94,17 @@ function SetupGit {
         $url = "https://$RemoteUrl"
     }
     
-    if (Test-Path -Path "src" -PathType Container) {
-        Write-Host "Clearing src folder before cloning"
-        Remove-Item "src" -Recurse -Force
+    $directory="src" 
+    if (Test-Path -Path $directory -PathType Container) {
+        Write-Host "Clearing [$directory] folder before cloning"
+        Remove-Item $directory -Recurse -Force
     }
-    $repoName="src" 
+    
     # create the (new) the folder and move into it
-    New-Item -Path $repoName -ItemType Directory | Out-Null
-    Set-Location $repoName
+    New-Item -Path $directory -ItemType Directory | Out-Null
+    Set-Location $directory
 
-    Write-Host "Cloning from url [$RemoteUrl] into directory [$repoName]"
+    Write-Host "Cloning from url [$RemoteUrl] into directory [$directory]"
     $status = (git clone $url . 2>&1)
     foreach ($obj in $status) {
         Write-Host $obj
