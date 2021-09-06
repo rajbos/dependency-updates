@@ -165,9 +165,17 @@ function Check-NPMrc {
     if ($true -eq (Test-Path ".npmrc" -PathType Leaf)) {
         Write-Host "Found .npmrc file in script root"
         if ($true -eq (Test-Path ".\src\$updateFolder" -PathType Container)) {
-            # copy the npmrc file over
-            Copy-Item ".npmrc" ".\src\$updateFolder\.npmrc"
-            Write-Host "Copied .npmrc from [$(Get-Location)] to [.\src\$updateFolder]"
+            if ($false -eq (Test-Path ".\src\$updateFolder\npmrc" -PathType Leaf)) {
+                # copy the npmrc file over
+                Copy-Item ".npmrc" ".\src\$updateFolder\.npmrc"
+                Write-Host "Copied .npmrc from [$(Get-Location)] to [.\src\$updateFolder]"
+            }
+            else {
+                Write-Host "Found existing .npmrc file in folder [.\src\$updateFolder\npmrc], will use that"
+            }
+        }
+        else {
+            Write-Host "Update "
         }
     }
 
