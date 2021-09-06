@@ -120,7 +120,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 
 RUN apk info -a musl
 
-COPY /src/*.ps1 /
+#COPY /src/*.ps1 /
 COPY /src/*.ps1 /dependency-updates/
 
 CMD [ "pwsh" ] 

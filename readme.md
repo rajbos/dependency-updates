@@ -89,6 +89,21 @@ The following startup parameters can be used:
 docker build -t local-dependency-updates:latest .
 ```
 
+# Run the container
+You can run the container locally with the following command to load PowerShell:
+```
+ docker run -it -e gitUserName="rajbos" -e gitUserEmail="your-email@acme.com" `
+   -e remoteUrl="https://github.com/rajbos/dependency-updates" `
+   local-dependency-updates:latest `
+   pwsh
+```
+
+Then you can setup any environment variables you need and run the script:
+```
+$MERGE_REQUEST_TITLE="Testing dependency updates"
+./dependency-updates/start.ps1 -updateType 'yarn' -targetType 'gitlab' -mergeWhenPipelineSucceeds 0 -mergeRequestTitle '$MERGE_REQUEST_TITLE' -specificPackages '@types/react'
+```
+
 # Testing with a .NET 5.0 sample solution
 After building the container you can run the local container against an example GitHub repository:
 ``` shell

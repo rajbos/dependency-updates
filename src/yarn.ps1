@@ -4,18 +4,20 @@ function ExecuteUpdates {
     )
 
     # adding debug info for finding config errors:
-    npm config list
+    Write-Host "NPM Config settings:"
+    $list = npm config list
+    foreach ($item in $list) { Write-Host "- $item" }
 
     # checking all files
     Write-Host "Local files: "
     foreach ($item in get-childitem) { Write-Host "- $($item.name)" }   
    
     # check for updates with yarn:
-    Write-Host "Running yarn"
+    Write-Host "Running command [yarn]"
     yarn
-    Write-Host "Running yarn eslint"
+    Write-Host "Running command [yarn eslint]"
     yarn eslint
-    Write-Host "Running yarn build"
+    Write-Host "Running command [yarn build]"
     yarn build
 
     if ($null -eq $specificPackages) {
