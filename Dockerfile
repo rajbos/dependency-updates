@@ -20,7 +20,7 @@ RUN echo "Installing dotnetcore 3.1:" && \
     rm dotnet.tar.gz
 
 # Include node setup in the image as well
-ENV NODE_VERSION 16.4.2
+ENV NODE_VERSION 16.15.0
 
 RUN addgroup -g 1000 node \
     && adduser -u 1000 -G node -s /bin/sh -D node \
